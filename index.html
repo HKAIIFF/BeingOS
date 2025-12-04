@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeingOS - Digital Existence Operating System</title>
+    <title>AIF Exchange - World's First AI-Native Film Asset Exchange</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -33,11 +34,16 @@
                     },
                     animation: {
                         'marquee': 'marquee 40s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out',
                     },
                     keyframes: {
                         marquee: {
                             '0%': { transform: 'translateX(0%)' },
                             '100%': { transform: 'translateX(-50%)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -69,701 +75,736 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .border-grid { border: 1px solid #e5e5e5; }
+
         .reveal-text { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
         .reveal-text.active { opacity: 1; transform: translateY(0); }
         
-        /* 移動端菜單樣式 - 修復後確保全屏覆蓋 */
+        /* 移動端菜單過渡 */
         #mobile-menu {
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out;
             transform: translateY(-100%);
-            opacity: 0;
-            pointer-events: none; /* 關閉時不阻擋點擊 */
         }
         #mobile-menu.open {
             transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
         }
+
+        /* 漢堡菜單動畫 */
+        .hamburger-line {
+            transition: all 0.3s ease;
+        }
+        .hamburger-active .line1 { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger-active .line2 { opacity: 0; }
+        .hamburger-active .line3 { transform: rotate(-45deg) translate(5px, -5px); }
     </style>
 </head>
 
 <body data-lang="en" class="bg-white text-black selection:bg-black selection:text-white">
 
-    <!-- 導航欄 - 確保 z-index 高於移動菜單 -->
-    <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 transition-all duration-300">
-        <div class="px-4 md:px-8 py-3 md:py-4 flex justify-between items-center max-w-[1920px] mx-auto relative z-50 bg-white/95">
-            
-            <!-- Logo 區域 -->
-            <a href="#" class="flex items-center gap-3 group flex-shrink-0">
-                <!-- Logo Icon -->
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-black text-white flex items-center justify-center font-bold text-lg md:text-xl rounded-full group-hover:scale-105 transition-transform flex-shrink-0">B</div>
-                
+    <!-- Navigation -->
+    <!-- Removed bg-white/95 and backdrop-blur-sm from here to fix fixed positioning bug -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300">
+        
+        <!-- Separated Background Layer: This preserves the blur effect without trapping the fixed mobile menu -->
+        <div class="absolute inset-0 bg-white/95 backdrop-blur-sm border-b border-gray-200"></div>
+
+        <!-- Added relative and z-50 here to ensure header content stays above the mobile menu -->
+        <div class="relative z-50 px-6 md:px-8 py-4 flex justify-between items-center max-w-[1920px] mx-auto">
+            <a href="#" class="flex items-center gap-4 group z-50">
                 <div class="flex flex-col leading-tight">
-                    <span class="text-base md:text-lg font-bold tracking-tight">BeingOS.</span>
-                    <span class="hidden sm:block text-[0.6rem] font-mono uppercase tracking-wider text-gray-500 group-hover:text-black transition-colors">
-                        <span class="lang-en">Digital Existence Operating System</span>
-                        <span class="lang-zh">數字存在的操作系統</span>
+                    <span class="text-lg font-bold tracking-tight">AIF EXCHANGE.</span>
+                    <span class="text-[0.6rem] font-mono uppercase tracking-wider text-gray-500 group-hover:text-black transition-colors">
+                        <span class="lang-en">Digital Asset Exchange</span>
+                        <span class="lang-zh">數字資產交易所</span>
                     </span>
                 </div>
             </a>
             
-            <!-- 桌面端菜單鏈接 -->
-            <div class="hidden xl:flex items-center gap-1 text-[13px] font-medium tracking-wide absolute left-1/2 transform -translate-x-1/2">
-                <a href="#vision" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Vision</span><span class="lang-zh">願景</span></a>
-                <a href="#architecture" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Architecture</span><span class="lang-zh">技術架構</span></a>
-                <a href="#products" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Products</span><span class="lang-zh">產品套件</span></a>
-                <a href="#trust" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Trust</span><span class="lang-zh">信任架構</span></a>
+            <!-- Desktop Menu -->
+            <div class="hidden xl:flex items-center gap-1 text-[13px] font-medium tracking-wide">
+                <a href="#trading" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Trading</span><span class="lang-zh">交易</span></a>
+                <a href="#features" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Features</span><span class="lang-zh">功能</span></a>
+                <a href="#tokens" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Tokens</span><span class="lang-zh">代幣</span></a>
+                <a href="#roadmap" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Roadmap</span><span class="lang-zh">路線圖</span></a>
                 <a href="#ecosystem" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Ecosystem</span><span class="lang-zh">生態系統</span></a>
-                <a href="#partners" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Partners</span><span class="lang-zh">合作夥伴</span></a>
+                <a href="#whitepaper" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Whitepaper</span><span class="lang-zh">白皮書</span></a>
             </div>
 
-            <!-- 右側按鈕區域 -->
-            <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
-                <button onclick="toggleLanguage()" class="text-[10px] md:text-xs font-mono border border-gray-200 px-2 md:px-3 py-1.5 rounded-full hover:bg-black hover:text-white transition-all uppercase flex-shrink-0">
+            <div class="flex items-center gap-4 z-50">
+                <button onclick="toggleLanguage()" class="text-xs font-mono border border-gray-200 px-3 py-1.5 rounded-full hover:bg-black hover:text-white transition-all uppercase">
                     <span class="lang-en">繁中</span><span class="lang-zh">EN</span>
                 </button>
                 
-                <a href="#demo" class="hidden md:flex bg-black text-white text-[13px] font-medium px-6 py-3 rounded-full academy-btn items-center gap-2 flex-shrink-0">
-                    <span class="lang-en">Live Demo</span><span class="lang-zh">體驗演示</span>
+                <a href="#register" class="hidden md:flex bg-black text-white text-[13px] font-medium px-6 py-3 rounded-full academy-btn items-center gap-2">
+                    <span class="lang-en">Start Trading</span><span class="lang-zh">開始交易</span>
+                </a>
+                
+                <a href="#login" class="hidden md:flex border border-gray-200 text-black text-[13px] font-medium px-6 py-3 rounded-full academy-btn hover:bg-gray-50 items-center gap-2">
+                    <span class="lang-en">Login</span><span class="lang-zh">登入</span>
                 </a>
 
-                <!-- 漢堡菜單按鈕 -->
-                <button id="menu-btn" class="xl:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 flex-shrink-0 p-1 group">
-                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
-                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
-                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="xl:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5">
+                    <span class="hamburger-line line1 w-6 h-0.5 bg-black block"></span>
+                    <span class="hamburger-line line2 w-6 h-0.5 bg-black block"></span>
+                    <span class="hamburger-line line3 w-6 h-0.5 bg-black block"></span>
                 </button>
             </div>
         </div>
-    </nav>
-
-    <!-- 移動端全屏菜單 - 已移出 Nav 標籤，放置於 Body 下 -->
-    <div id="mobile-menu" class="fixed inset-0 bg-white/98 z-40 flex flex-col justify-start items-center pt-32 pb-10 xl:hidden">
-        <div class="flex flex-col items-center gap-6 text-xl font-medium w-full">
-            <a href="#vision" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Vision</span><span class="lang-zh">願景</span></a>
-            <a href="#architecture" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Architecture</span><span class="lang-zh">技術架構</span></a>
-            <a href="#products" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Products</span><span class="lang-zh">產品套件</span></a>
-            <a href="#trust" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Trust</span><span class="lang-zh">信任架構</span></a>
-            <a href="#ecosystem" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Ecosystem</span><span class="lang-zh">生態系統</span></a>
-            <a href="#partners" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Partners</span><span class="lang-zh">合作夥伴</span></a>
-            
-            <div class="w-20 h-px bg-gray-200 my-4"></div>
-            
-            <a href="#demo" class="mobile-link text-black font-bold py-2 w-full text-center hover:bg-gray-50" onclick="toggleMenu()"><span class="lang-en">Live Demo</span><span class="lang-zh">體驗演示</span></a>
-            <a href="#contact" class="mobile-link text-gray-500 py-2 w-full text-center hover:bg-gray-50" onclick="toggleMenu()"><span class="lang-en">Contact</span><span class="lang-zh">聯繫合作</span></a>
+        
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-40 pt-24 px-6 pb-6 flex flex-col xl:hidden overflow-y-auto">
+            <div class="flex flex-col gap-4 text-xl font-medium">
+                <a href="#trading" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Trading</span><span class="lang-zh">交易</span></a>
+                <a href="#features" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Features</span><span class="lang-zh">功能</span></a>
+                <a href="#tokens" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Tokens</span><span class="lang-zh">代幣</span></a>
+                <a href="#roadmap" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Roadmap</span><span class="lang-zh">路線圖</span></a>
+                <a href="#ecosystem" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Ecosystem</span><span class="lang-zh">生態系統</span></a>
+                <a href="#whitepaper" class="py-3 border-b border-gray-100" onclick="closeMenu()"><span class="lang-en">Whitepaper</span><span class="lang-zh">白皮書</span></a>
+                
+                <div class="mt-4 flex flex-col gap-3">
+                    <a href="#register" class="bg-black text-white py-4 rounded-full text-center font-bold" onclick="closeMenu()">
+                        <span class="lang-en">Start Trading</span><span class="lang-zh">開始交易</span>
+                    </a>
+                    <a href="#login" class="border border-gray-200 py-4 rounded-full text-center font-bold" onclick="closeMenu()">
+                        <span class="lang-en">Login</span><span class="lang-zh">登入</span>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
 
     <!-- Header / Hero Section -->
     <header class="relative pt-32 pb-20 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div class="md:col-span-8">
                 <div class="mb-6 inline-flex items-center gap-2 border border-gray-200 rounded-full px-3 py-1 bg-gray-50">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
                     <span class="text-[10px] uppercase tracking-widest font-mono font-medium text-gray-500">
-                        <span class="lang-en">From IP Protection to User Sovereignty</span>
-                        <span class="lang-zh">從IP保護到用戶主權</span>
+                        <span class="lang-en">Professional • Secure • Innovative • Compliant</span>
+                        <span class="lang-zh">專業 • 安全 • 創新 • 合規</span>
                     </span>
                 </div>
                 
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.1] mb-10 text-black">
-                    <span class="lang-en">Redefining <br> Digital Existence.</span>
-                    <span class="lang-zh">重新定義數字存在<br>構建AI原生生命</span>
+                <h1 class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9] mb-10 text-black">
+                    AIF <br> EXCHANGE
                 </h1>
                 
                 <p class="text-lg md:text-xl text-gray-500 max-w-2xl leading-relaxed font-light">
-                    <span class="lang-en">BeingOS is the foundational operating system for digital existence, empowering every individual to create, manage, and deploy autonomous AI lifeforms.</span>
-                    <span class="lang-zh">BeingOS 是為數字存在打造的基礎操作系統，賦能每個個體創造、管理並部署自主的AI生命體，開啟從「IP保護」到「用戶主權」的範式革命。</span>
+                    <span class="lang-en">The World's First AI-Native Film Digital Asset Exchange.<br>Defining the financial infrastructure for the next-gen creative economy.</span>
+                    <span class="lang-zh">全球首個AI原生電影數字資產交易所。<br>為新一代創意經濟定義金融基礎設施。</span>
                 </p>
-
-                <div class="flex gap-4 mt-8 flex-wrap">
-                    <a href="#vision" class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors">
-                        <span class="lang-en">Explore Vision</span><span class="lang-zh">探索願景</span>
+                
+                <div class="flex flex-wrap gap-4 mt-8">
+                     <a href="#trading" class="bg-black text-white text-sm font-medium px-8 py-4 rounded-full academy-btn flex items-center gap-2">
+                        <i class="fas fa-chart-line"></i> <span class="lang-en">Start Trading</span><span class="lang-zh">開始交易</span>
                     </a>
-                    <a href="#demo" class="border border-gray-300 px-8 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors">
-                        <span class="lang-en">Watch Demo</span><span class="lang-zh">觀看演示</span>
+                    <a href="#whitepaper" class="border border-black text-black text-sm font-medium px-8 py-4 rounded-full academy-btn flex items-center gap-2 hover:bg-gray-50">
+                        <i class="fas fa-book"></i> <span class="lang-en">Whitepaper</span><span class="lang-zh">查看白皮書</span>
                     </a>
                 </div>
             </div>
 
+            <!-- Market Data Cards -->
             <div class="md:col-span-4 flex flex-col justify-end">
                 <div class="grid grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
                     <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
-                        <span class="block text-3xl font-bold mb-1">4<span class="text-sm font-normal text-gray-400">Layers</span></span>
-                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Personality Engine</span><span class="lang-zh">人格引擎架構</span></span>
+                        <div class="flex items-center gap-2 mb-2 text-gray-400 text-xs font-mono uppercase">
+                            <i class="fas fa-chart-line"></i> <span class="lang-en">Price</span><span class="lang-zh">即時交易</span>
+                        </div>
+                        <span class="block text-3xl font-bold mb-1">$125.67</span>
+                        <span class="text-[10px] font-mono text-green-600 font-bold">+12.34% 24h</span>
                     </div>
                     <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
-                        <span class="block text-3xl font-bold mb-1">3<span class="text-sm font-normal text-gray-400">Types</span></span>
-                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Memory Storage</span><span class="lang-zh">記憶存儲機制</span></span>
+                        <div class="flex items-center gap-2 mb-2 text-gray-400 text-xs font-mono uppercase">
+                            <i class="fas fa-coins"></i> <span class="lang-en">Supply</span><span class="lang-zh">總代幣數量</span>
+                        </div>
+                        <span class="block text-3xl font-bold mb-1">10B</span>
+                        <span class="text-[10px] font-mono text-gray-400"><span class="lang-en">Total AIF</span><span class="lang-zh">AIF 總供應量</span></span>
                     </div>
                     <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
-                        <span class="block text-3xl font-bold mb-1">100%</span>
-                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Data Sovereignty</span><span class="lang-zh">用戶數據主權</span></span>
+                        <div class="flex items-center gap-2 mb-2 text-gray-400 text-xs font-mono uppercase">
+                            <i class="fas fa-users"></i> <span class="lang-en">Users</span><span class="lang-zh">註冊用戶</span>
+                        </div>
+                        <span class="block text-3xl font-bold mb-1">50K+</span>
+                        <span class="text-[10px] font-mono text-gray-400"><span class="lang-en">Active Global</span><span class="lang-zh">全球活躍用戶</span></span>
                     </div>
                     <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
-                        <span class="block text-3xl font-bold mb-1">∞</span>
-                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Digital Legacy</span><span class="lang-zh">數字遺產傳承</span></span>
+                        <div class="flex items-center gap-2 mb-2 text-gray-400 text-xs font-mono uppercase">
+                            <i class="fas fa-film"></i> <span class="lang-en">Projects</span><span class="lang-zh">電影項目</span>
+                        </div>
+                        <span class="block text-3xl font-bold mb-1">247</span>
+                        <span class="text-[10px] font-mono text-gray-400"><span class="lang-en">Listed</span><span class="lang-zh">已上線項目</span></span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Marquee -->
+    <!-- Marquee Section -->
     <div class="border-b border-gray-200 py-6 overflow-hidden bg-gray-50">
         <div class="whitespace-nowrap animate-marquee flex items-center gap-12 opacity-80 text-xs font-mono font-medium uppercase tracking-widest text-black">
-            <span>Personality Engine</span> <span>✦</span> <span>Memory Cortex</span> <span>✦</span> <span>Interaction Engine</span> <span>✦</span> <span>Decentralized ID</span> <span>✦</span>
-            <span>人格引擎</span> <span>✦</span> <span>記憶皮層</span> <span>✦</span> <span>互動引擎</span> <span>✦</span> <span>去中心化身份</span> <span>✦</span>
-            <span>Personality Engine</span> <span>✦</span> <span>Memory Cortex</span> <span>✦</span> <span>Interaction Engine</span> <span>✦</span> <span>Decentralized ID</span> <span>✦</span>
+            <span>Spot Trading</span> <span>✦</span> <span>Derivatives</span> <span>✦</span> <span>ITO Platform</span> <span>✦</span> <span>NFT Marketplace</span> <span>✦</span> <span>AI Analytics</span> <span>✦</span>
+            <span>現貨交易</span> <span>✦</span> <span>衍生品交易</span> <span>✦</span> <span>ITO 平台</span> <span>✦</span> <span>NFT 市場</span> <span>✦</span> <span>AI 分析</span> <span>✦</span>
+            <span>Spot Trading</span> <span>✦</span> <span>Derivatives</span> <span>✦</span> <span>ITO Platform</span> <span>✦</span> <span>NFT Marketplace</span> <span>✦</span> <span>AI Analytics</span> <span>✦</span>
         </div>
     </div>
 
-    <!-- Vision / Paradigm Section -->
-    <section id="vision" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
+    <!-- Trading Features Section -->
+    <section id="trading" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
+        <div class="flex justify-between items-end mb-12 reveal-text">
+            <h2 class="text-3xl font-bold tracking-tight">
+                <span class="lang-en">Core Trading Features</span><span class="lang-zh">核心交易功能</span>
+            </h2>
+            <span class="text-xs font-mono text-gray-400 hidden md:inline-block">Designed for AI-Native Cinema</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Spot Trading -->
+            <div class="group bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text">
+                <div class="text-4xl mb-6 text-black group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
+                    <span class="lang-en">Spot Trading System</span><span class="lang-zh">現貨交易系統</span>
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed mb-6">
+                    <span class="lang-en">Support for AIF platform tokens, FilmTokens, and creative asset NFT trading.</span>
+                    <span class="lang-zh">支援AIF平台代幣、電影專屬代幣(FilmToken)及創意資產NFT交易。</span>
+                </p>
+                <ul class="space-y-3 text-xs font-mono text-gray-500 border-t border-gray-100 pt-6">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">AIF/USDT, AIF/HKD Pairs</span><span class="lang-zh">AIF/USDT、AIF/HKD交易對</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Film Token Trading</span><span class="lang-zh">電影專屬代幣交易</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Creative Asset NFT Market</span><span class="lang-zh">創意資產NFT市場</span></li>
+                </ul>
+            </div>
+
+            <!-- ITO Platform -->
+            <div class="group bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text delay-100">
+                <div class="text-4xl mb-6 text-black group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
+                    <span class="lang-en">Initial Token Offering (ITO)</span><span class="lang-zh">初始代幣發行(ITO)</span>
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed mb-6">
+                    <span class="lang-en">Incubation services for premium AI film projects before token issuance.</span>
+                    <span class="lang-zh">為優質AI電影項目提供代幣發行前的孵化服務。</span>
+                </p>
+                <ul class="space-y-3 text-xs font-mono text-gray-500 border-t border-gray-100 pt-6">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Project Incubation</span><span class="lang-zh">項目孵化服務</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Compliant Issuance</span><span class="lang-zh">合規發行流程</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Investor Protection</span><span class="lang-zh">投資者保護制度</span></li>
+                </ul>
+            </div>
+
+            <!-- Derivatives -->
+            <div class="group bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text delay-200">
+                <div class="text-4xl mb-6 text-black group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
+                    <span class="lang-en">Derivatives Trading</span><span class="lang-zh">衍生品交易</span>
+                </h3>
+                <p class="text-sm text-gray-500 leading-relaxed mb-6">
+                    <span class="lang-en">Futures, options, and other derivative products for different risk appetites.</span>
+                    <span class="lang-zh">提供期貨、期權等衍生品，滿足不同風險偏好。</span>
+                </p>
+                <ul class="space-y-3 text-xs font-mono text-gray-500 border-t border-gray-100 pt-6">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Futures Contracts</span><span class="lang-zh">期貨合約交易</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">Yield Options</span><span class="lang-zh">收益權期權產品</span></li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-black"></i> <span class="lang-en">AI Film Index</span><span class="lang-zh">AI電影產業指數</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Token Section -->
+    <section id="tokens" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-gray-200 pb-8 reveal-text">
+            <div>
+                <h2 class="text-4xl font-bold mb-4">
+                    <span class="lang-en">AIF Tokenomics</span><span class="lang-zh">AIF 代幣經濟學</span>
+                </h2>
+                <p class="text-gray-500">
+                    <span class="lang-en">Platform Native Token, Total Supply 10 Billion</span>
+                    <span class="lang-zh">AIF Exchange平台原生代幣，總供應量100億枚</span>
+                </p>
+            </div>
+            <div class="text-right mt-6 md:mt-0">
+                <div class="text-4xl font-bold font-mono tracking-tight">10,000,000,000</div>
+                <div class="text-xs uppercase tracking-widest text-gray-400 mt-1">
+                    <span class="lang-en">Total Supply</span><span class="lang-zh">總供應量</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Token Info Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden mb-16 reveal-text">
+            <div class="bg-white p-8">
+                <span class="text-xs font-mono text-gray-400 uppercase block mb-2"><span class="lang-en">Symbol</span><span class="lang-zh">代幣符號</span></span>
+                <span class="text-2xl font-bold">AIF</span>
+            </div>
+            <div class="bg-white p-8">
+                <span class="text-xs font-mono text-gray-400 uppercase block mb-2"><span class="lang-en">Standard</span><span class="lang-zh">代幣標準</span></span>
+                <span class="text-2xl font-bold">SPL + Solana</span>
+            </div>
+            <div class="bg-white p-8">
+                <span class="text-xs font-mono text-gray-400 uppercase block mb-2"><span class="lang-en">Mechanism</span><span class="lang-zh">通脹機制</span></span>
+                <span class="text-2xl font-bold"><span class="lang-en">Deflationary</span><span class="lang-zh">通縮銷毀</span></span>
+            </div>
+             <div class="bg-white p-8">
+                <span class="text-xs font-mono text-gray-400 uppercase block mb-2"><span class="lang-en">Utility</span><span class="lang-zh">用途</span></span>
+                <span class="text-2xl font-bold"><span class="lang-en">Gov & Fees</span><span class="lang-zh">治理與手續費</span></span>
+            </div>
+        </div>
+
+        <!-- Distribution List -->
+        <h3 class="text-xl font-bold mb-8 reveal-text"><span class="lang-en">Token Distribution</span><span class="lang-zh">代幣分配方案</span></h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal-text mb-16">
+            <div class="border-l-2 border-black pl-6 py-2">
+                <div class="text-3xl font-bold mb-1">30%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1"><span class="lang-en">Ecosystem Growth</span><span class="lang-zh">生態系統發展</span></h4>
+                <p class="text-xs text-gray-500 font-mono">3,000,000,000 AIF</p>
+            </div>
+            <div class="border-l-2 border-gray-300 pl-6 py-2">
+                <div class="text-3xl font-bold mb-1 text-gray-600">20%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1 text-gray-600"><span class="lang-en">Team & Advisors</span><span class="lang-zh">團隊和顧問</span></h4>
+                <p class="text-xs text-gray-400 font-mono">2,000,000,000 AIF</p>
+            </div>
+            <div class="border-l-2 border-gray-300 pl-6 py-2">
+                <div class="text-3xl font-bold mb-1 text-gray-600">20%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1 text-gray-600"><span class="lang-en">Investors</span><span class="lang-zh">投資者</span></h4>
+                <p class="text-xs text-gray-400 font-mono">2,000,000,000 AIF</p>
+            </div>
+            <div class="border-l-2 border-gray-300 pl-6 py-2">
+                <div class="text-3xl font-bold mb-1 text-gray-600">15%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1 text-gray-600"><span class="lang-en">Community</span><span class="lang-zh">社區激勵</span></h4>
+                <p class="text-xs text-gray-400 font-mono">1,500,000,000 AIF</p>
+            </div>
+            <div class="border-l-2 border-gray-300 pl-6 py-2">
+                <div class="text-3xl font-bold mb-1 text-gray-600">10%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1 text-gray-600"><span class="lang-en">Liquidity</span><span class="lang-zh">流動性提供</span></h4>
+                <p class="text-xs text-gray-400 font-mono">1,000,000,000 AIF</p>
+            </div>
+            <div class="border-l-2 border-gray-300 pl-6 py-2">
+                <div class="text-3xl font-bold mb-1 text-gray-600">5%</div>
+                <h4 class="font-bold text-sm uppercase tracking-wider mb-1 text-gray-600"><span class="lang-en">Marketing</span><span class="lang-zh">營銷推廣</span></h4>
+                <p class="text-xs text-gray-400 font-mono">500,000,000 AIF</p>
+            </div>
+        </div>
+
+        <!-- Token Utilities (Added back for completeness) -->
+        <div class="reveal-text">
+            <h3 class="text-xl font-bold mb-8"><span class="lang-en">Token Utility</span><span class="lang-zh">AIF 代幣功能</span></h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="border border-gray-200 p-8 rounded-lg">
+                    <h4 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-percentage"></i> <span class="lang-en">Fee Discounts</span><span class="lang-zh">交易費用支付</span>
+                    </h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">20-50% discount when paying fees with AIF.</span><span class="lang-zh">使用AIF支付手續費享受20-50%折扣。</span></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">Tiered discount mechanism based on holdings.</span><span class="lang-zh">階梯式折扣機制，持有量越多折扣越大。</span></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">VIP membership system based on AIF holdings.</span><span class="lang-zh">基於AIF持有量和交易量的VIP會員體系。</span></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="border border-gray-200 p-8 rounded-lg">
+                    <h4 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-vote-yea"></i> <span class="lang-en">Governance Rights</span><span class="lang-zh">治理權利</span>
+                    </h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">Vote on major exchange decisions.</span><span class="lang-zh">參與交易所重大決策投票。</span></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">Voting rights for new token listings.</span><span class="lang-zh">新幣種上幣投票權。</span></span>
+                        </li>
+                         <li class="flex items-start gap-2">
+                            <span class="mt-1.5 w-1 h-1 bg-black rounded-full"></span>
+                            <span><span class="lang-en">Participate in development direction decisions.</span><span class="lang-zh">交易所發展方向決策參與權。</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech & Features -->
+    <section id="features" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto">
+         <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
             <div class="md:col-span-4">
                 <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6 reveal-text">
-                    <span class="lang-en">Paradigm <br> Revolution.</span>
-                    <span class="lang-zh">範式 <br> 革命</span>
+                    <span class="lang-en">Tech & <br> Security.</span>
+                    <span class="lang-zh">技術與 <br> 安全</span>
                 </h2>
-                <span class="inline-block px-3 py-1 rounded-full border border-gray-300 text-xs font-mono text-gray-500 uppercase reveal-text delay-100">// The New Standard</span>
+                <span class="inline-block px-3 py-1 rounded-full border border-gray-300 text-xs font-mono text-gray-500 uppercase reveal-text delay-100">// High Performance</span>
             </div>
             <div class="md:col-span-8">
                 <p class="text-xl font-light text-gray-600 mb-12 reveal-text">
-                    <span class="lang-en">Fundamental difference from first-generation AI digital human platforms: Moving from IP protection to User Sovereignty.</span>
-                    <span class="lang-zh">BeingOS 與第一代AI數字人平台的根本性差異：從IP保護到用戶主權。</span>
+                    <span class="lang-en">High-performance trading system based on the latest blockchain technology, ensuring security and speed.</span>
+                    <span class="lang-zh">基於最新區塊鏈技術的高性能交易系統，確保安全與速度。</span>
                 </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 reveal-text">
-                    <!-- Old Paradigm -->
-                    <div class="p-8 border border-gray-100 bg-gray-50 rounded-lg opacity-70 hover:opacity-100 transition-opacity">
-                        <h4 class="text-xs uppercase tracking-wider text-gray-500 mb-4"><span class="lang-en">StarOS: Old Paradigm</span><span class="lang-zh">StarOS：舊範式</span></h4>
-                        <p class="text-sm text-gray-500 mb-6 min-h-[40px]">
-                            <span class="lang-en">Centralized, top-down IP value migration protecting elite intellectual property.</span>
-                            <span class="lang-zh">以中心化、自上而下的名人IP價值遷移為核心，旨在保護少數精英的知識產權。</span>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 reveal-text">
+                    <div class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="text-3xl mb-4"><i class="fas fa-tachometer-alt"></i></div>
+                        <h4 class="font-bold mb-2"><span class="lang-en">High Performance Engine</span><span class="lang-zh">高性能交易引擎</span></h4>
+                        <p class="text-sm text-gray-600 mb-4">
+                            <span class="lang-en">Matching speed < 1ms, 1,000,000 TPS, Microservices architecture.</span>
+                            <span class="lang-zh">撮合速度低於1毫秒，支持100萬TPS，微服務架構。</span>
                         </p>
-                        <ul class="text-sm text-gray-500 space-y-4">
-                            <li class="flex gap-3">
-                                <span class="text-lg">👥</span>
-                                <div>
-                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Target</span><span class="lang-zh">目標受眾</span></strong>
-                                    <span class="lang-en">Celebrities, IP Holders</span><span class="lang-zh">頂級名人、IP持有者</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="text-lg">💾</span>
-                                <div>
-                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Control</span><span class="lang-zh">控制模型</span></strong>
-                                    <span class="lang-en">Centralized / Platform owned</span><span class="lang-zh">中心化 / 平台控制</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="text-lg">📉</span>
-                                <div>
-                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Economy</span><span class="lang-zh">經濟模型</span></strong>
-                                    <span class="lang-en">Licensing & Revenue Share</span><span class="lang-zh">IP授權與收入分成</span>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="text-xs font-mono text-gray-500 bg-white p-2 rounded border border-gray-100">
+                            Latency: <span class="text-black font-bold">&lt;1ms</span>
+                        </div>
                     </div>
 
-                    <!-- New Paradigm -->
-                    <div class="p-8 border border-black bg-black text-white rounded-lg shadow-xl">
-                        <h4 class="text-xs uppercase tracking-wider text-gray-400 mb-4"><span class="lang-en">BeingOS: New Paradigm</span><span class="lang-zh">BeingOS：新範式</span></h4>
-                        <p class="text-sm text-gray-300 mb-6 min-h-[40px]">
-                            <span class="lang-en">Decentralized, bottom-up universal digital identity creation achieving user sovereignty.</span>
-                            <span class="lang-zh">致力於去中心化、自下而上的普世數字身份創造，實現用戶主權。</span>
+                    <div class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="text-3xl mb-4"><i class="fas fa-shield-alt"></i></div>
+                        <h4 class="font-bold mb-2"><span class="lang-en">Multi-Layer Security</span><span class="lang-zh">多層安全架構</span></h4>
+                        <p class="text-sm text-gray-600 mb-4">
+                            <span class="lang-en">DDoS protection, cold/hot wallet separation, multi-factor authentication.</span>
+                            <span class="lang-zh">DDoS防護、多重身份驗證、冷熱錢包分離。</span>
                         </p>
-                        <ul class="text-sm text-gray-300 space-y-4">
-                            <li class="flex gap-3">
-                                <span class="text-lg">🌍</span>
-                                <div>
-                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Target</span><span class="lang-zh">目標受眾</span></strong>
-                                    <span class="lang-en">Everyone, Creators, Developers</span><span class="lang-zh">每一個個體、創造者</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="text-lg">🔐</span>
-                                <div>
-                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Control</span><span class="lang-zh">控制模型</span></strong>
-                                    <span class="lang-en">Decentralized / 100% User Owned</span><span class="lang-zh">去中心化 / 100%用戶控制</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="text-lg">🚀</span>
-                                <div>
-                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Economy</span><span class="lang-zh">經濟模型</span></strong>
-                                    <span class="lang-en">Creator Economy & Subscription</span><span class="lang-zh">開放的創造者經濟</span>
-                                </div>
-                            </li>
-                        </ul>
+                         <div class="text-xs font-mono text-gray-500 bg-white p-2 rounded border border-gray-100">
+                            Cold Storage: <span class="text-black font-bold">95%</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="text-3xl mb-4"><i class="fas fa-brain"></i></div>
+                        <h4 class="font-bold mb-2"><span class="lang-en">AI-Driven Features</span><span class="lang-zh">AI驅動功能</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Smart trading assistance, AI content valuation, market sentiment analysis.</span>
+                            <span class="lang-zh">智能交易輔助、內容估值AI、市場情緒分析。</span>
+                        </p>
+                    </div>
+
+                    <div class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="text-3xl mb-4"><i class="fas fa-balance-scale"></i></div>
+                        <h4 class="font-bold mb-2"><span class="lang-en">Global Compliance</span><span class="lang-zh">全球合規</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Strictly following SFC and global regulatory requirements. Type 1 & 7 Licenses.</span>
+                            <span class="lang-zh">嚴格遵循香港證監會及全球主要市場監管要求。持有1類&7類牌照。</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Four Pillars -->
-    <section class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200 bg-gray-50">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-text">
-            <div>
-                <h2 class="text-3xl font-bold mb-4">
-                    <span class="lang-en">Four Pillars of Sovereignty</span><span class="lang-zh">數字主權的四大支柱</span>
+    <!-- Roadmap -->
+    <section id="roadmap" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-t border-gray-200">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16 reveal-text">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="lang-en">Roadmap</span><span class="lang-zh">發展路線圖</span>
                 </h2>
-                <p class="text-gray-500 max-w-xl">
-                    <span class="lang-en">The vision of BeingOS is built upon four unshakable principles.</span>
-                    <span class="lang-zh">BeingOS 的願景建立在四大不可動搖的原則之上。</span>
+                <p class="text-gray-500">
+                    <span class="lang-en">From foundation to global expansion</span>
+                    <span class="lang-zh">從基礎平台建設到全球擴張的完整發展計劃</span>
+                </p>
+            </div>
+            
+            <div class="relative border-l border-gray-200 space-y-10 ml-4 reveal-text">
+                <!-- 2025 Q4 -->
+                <div class="pl-10 relative group">
+                    <div class="absolute -left-[5px] top-2 w-2.5 h-2.5 bg-black rounded-full ring-4 ring-white"></div>
+                    <div class="flex items-center mb-2">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-black mr-4">2025 Q4</h4>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2"><span class="lang-en">Platform Foundation</span><span class="lang-zh">基礎平台建設</span></h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span class="lang-en">Core trading engine development, KYC system, wallet management, security framework.</span>
+                        <span class="lang-zh">核心交易引擎開發、用戶管理和KYC系統、錢包和資產管理系統、安全框架部署。</span>
+                    </p>
+                    <div class="flex gap-2">
+                         <span class="bg-gray-200 text-black text-[10px] px-2 py-1 rounded font-mono uppercase">Dev</span>
+                         <span class="bg-gray-200 text-black text-[10px] px-2 py-1 rounded font-mono uppercase">Compliance</span>
+                    </div>
+                </div>
+
+                <!-- 2026 Q1-Q2 -->
+                <div class="pl-10 relative group">
+                    <div class="absolute -left-[5px] top-2 w-2.5 h-2.5 bg-gray-300 rounded-full ring-4 ring-white"></div>
+                    <div class="flex items-center mb-2">
+                         <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">2026 Q1-Q2</h4>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2"><span class="lang-en">Core Launch</span><span class="lang-zh">核心功能上線</span></h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span class="lang-en">Spot trading live, market making, first batch of film token issuance.</span>
+                        <span class="lang-zh">AIF現貨交易正式上線、基礎訂單類型、做市商對接、首批電影項目代幣發行。</span>
+                    </p>
+                </div>
+
+                <!-- 2026 Q3-Q4 -->
+                <div class="pl-10 relative group">
+                    <div class="absolute -left-[5px] top-2 w-2.5 h-2.5 bg-gray-300 rounded-full ring-4 ring-white"></div>
+                     <div class="flex items-center mb-2">
+                         <h4 class="text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">2026 Q3-Q4</h4>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2"><span class="lang-en">Expansion</span><span class="lang-zh">功能擴展</span></h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <span class="lang-en">Margin trading, futures & options, cross-chain bridge, ecosystem integration.</span>
+                        <span class="lang-zh">槓桿交易和保證金系統、期貨和期權產品上線、跨鏈交易、與電影節生態深度整合。</span>
+                    </p>
+                </div>
+
+                <!-- 2028+ -->
+                <div class="pl-10 relative group">
+                    <div class="absolute -left-[5px] top-2 w-2.5 h-2.5 bg-black rounded-full ring-4 ring-white"></div>
+                     <div class="flex items-center mb-2">
+                         <h4 class="text-xs font-bold uppercase tracking-widest text-black mr-4">2028+</h4>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2"><span class="lang-en">Industry Leadership</span><span class="lang-zh">行業領導地位</span></h3>
+                    <p class="text-sm text-gray-600">
+                        <span class="lang-en">Global standard setter for AI-native content financialization. IPO preparation.</span>
+                        <span class="lang-zh">成為全球AI原生內容金融化的標準制定者。IPO準備，全球領導。</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ecosystem Integration -->
+    <section id="ecosystem" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-t border-gray-200">
+        <div class="flex flex-col md:flex-row gap-12 items-center mb-16 reveal-text">
+            <div class="flex-1">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="lang-en">Festival Ecosystem</span><span class="lang-zh">電影節生態融合</span>
+                </h2>
+                <p class="text-xl text-gray-500 font-light">
+                    <span class="lang-en">Deep integration with HKAIIFF, providing complete financial solutions for the AI-native film industry.</span>
+                    <span class="lang-zh">深度整合香港AI國際電影節生態系統，為AI原生電影產業提供完整的金融解決方案。</span>
                 </p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-text">
-            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
-                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🛡️</div>
-                <h3 class="font-bold mb-3"><span class="lang-en">Total User Control</span><span class="lang-zh">徹底的用戶控制</span></h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    <span class="lang-en">Users are the sole masters of their digital existence, possessing absolute rights to create, modify, or permanently delete.</span>
-                    <span class="lang-zh">用戶是其數字存在的唯一主宰者，擁有創造、修改、乃至永久刪除其數字生命體的絕對權利。</span>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg hover:bg-black hover:text-white transition-all duration-300 group">
+                <div class="text-3xl mb-4"><i class="fas fa-crown"></i></div>
+                <h4 class="font-bold mb-2"><span class="lang-en">Priority Listing</span><span class="lang-zh">獲獎作品優先上幣</span></h4>
+                <p class="text-sm text-gray-500 group-hover:text-gray-300">
+                    <span class="lang-en">Award-winning works get green channel for token issuance.</span>
+                    <span class="lang-zh">電影節獲獎作品自動獲得代幣發行綠色通道。</span>
                 </p>
             </div>
-            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
-                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🔒</div>
-                <h3 class="font-bold mb-3"><span class="lang-en">Privacy by Design</span><span class="lang-zh">源於架構的隱私</span></h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    <span class="lang-en">Privacy is a mathematical guarantee via cryptography and system design, not just policy.</span>
-                    <span class="lang-zh">隱私不是政策條款，而是通過密碼學和系統設計實現的數學保證，平台無法訪問用戶原始私密數據。</span>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg hover:bg-black hover:text-white transition-all duration-300 group">
+                <div class="text-3xl mb-4"><i class="fas fa-gavel"></i></div>
+                <h4 class="font-bold mb-2"><span class="lang-en">Jury Evaluation</span><span class="lang-zh">專業評委評估</span></h4>
+                <p class="text-sm text-gray-500 group-hover:text-gray-300">
+                    <span class="lang-en">Festival jury ensures artistic value and technical quality.</span>
+                    <span class="lang-zh">電影節資深評委團隊參與項目評估，確保品質。</span>
                 </p>
             </div>
-            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
-                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🎨</div>
-                <h3 class="font-bold mb-3"><span class="lang-en">Open Democratization</span><span class="lang-zh">開放與民主化的創造</span></h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    <span class="lang-en">Core tools open to everyone. Creativity should not be limited by status or wealth.</span>
-                    <span class="lang-zh">核心工具向所有人開放，創造力不應被身份、地位或財富所限制。</span>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg hover:bg-black hover:text-white transition-all duration-300 group">
+                <div class="text-3xl mb-4"><i class="fas fa-play-circle"></i></div>
+                <h4 class="font-bold mb-2"><span class="lang-en">404.world Synergy</span><span class="lang-zh">流媒體平台協同</span></h4>
+                <p class="text-sm text-gray-500 group-hover:text-gray-300">
+                    <span class="lang-en">Watch-to-earn and creator economy integration.</span>
+                    <span class="lang-zh">與404.world深度整合，實現觀看即挖礦。</span>
                 </p>
             </div>
-            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
-                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">♾️</div>
-                <h3 class="font-bold mb-3"><span class="lang-en">Sustainable Legacy</span><span class="lang-zh">永續且可傳承的遺產</span></h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    <span class="lang-en">Digital lives designed as secure, inheritable assets that transcend physical life.</span>
-                    <span class="lang-zh">數字生命被設計為能夠超越物理生命、可安全傳承的資產，建立跨越代際的情感與智慧連接。</span>
+            <div class="p-6 bg-white border border-gray-200 rounded-lg hover:bg-black hover:text-white transition-all duration-300 group">
+                <div class="text-3xl mb-4"><i class="fas fa-graduation-cap"></i></div>
+                <h4 class="font-bold mb-2"><span class="lang-en">Education</span><span class="lang-zh">AI學院教育整合</span></h4>
+                <p class="text-sm text-gray-500 group-hover:text-gray-300">
+                    <span class="lang-en">Cultivating blockchain film talents with AI Film Academy.</span>
+                    <span class="lang-zh">與AI電影學院合作，培養區塊鏈電影創作人才。</span>
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Architecture Section -->
-    <section id="architecture" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
-        <div class="mb-16 reveal-text">
-            <h2 class="text-4xl font-bold mb-6">
-                <span class="lang-en">Architecture of Soul</span>
-                <span class="lang-zh">數字靈魂的架構</span>
-            </h2>
-            <p class="text-gray-500 max-w-2xl">
-                <span class="lang-en">Core technologies building credible, profound, and living digital souls.</span>
-                <span class="lang-zh">構建可信、深刻且富有生命力的數字靈魂的核心技術。</span>
-            </p>
+    <!-- Financials -->
+    <section class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-t border-gray-200">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4"><span class="lang-en">Financial Projections</span><span class="lang-zh">財務預測</span></h2>
+            <p class="text-gray-500"><span class="lang-en">Targeting $260M Revenue in 5 Years</span><span class="lang-zh">預計5年內實現2.6億美元收入</span></p>
         </div>
 
-        <div class="space-y-24">
-            <!-- Personality Engine -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
-                <div class="md:col-span-4 border-t-2 border-black pt-6">
-                    <span class="font-mono text-xs text-gray-400 mb-4 block">01 / Engine</span>
-                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Personality Engine</span><span class="lang-zh">人格引擎</span></h3>
-                    <p class="text-gray-600 mb-6">
-                        <span class="lang-en">Solving the "inconsistent personality" issue through a multi-layered controlled architecture ensuring coherence.</span>
-                        <span class="lang-zh">解決AI角色「人格不一致」的核心痛點，通過多層次的受控架構確保數字生命體的行為連貫性和可信度。</span>
-                    </p>
-                    <div class="text-5xl opacity-10">🧠</div>
-                </div>
-                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Core Personality</span><span class="lang-zh">核心人格</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Based on "Big Five" model for consistency.</span><span class="lang-zh">基於成熟的「大五人格模型」，設定基礎傾向。</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Identity Narrative</span><span class="lang-zh">身份敘事</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Defined values via knowledge injection.</span><span class="lang-zh">通過用戶主動的「知識注入」定義價值觀。</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Behavior Engine</span><span class="lang-zh">行為引擎</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">"Behavior Tree" technology for complex logic.</span><span class="lang-zh">採用「行為樹」技術設計複雜行為邏輯。</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Emotional Core</span><span class="lang-zh">情感核心</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Real-time dynamic emotional state model.</span><span class="lang-zh">實時變化的情感狀態模型。</span></p>
-                    </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto mb-16 text-center">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+                <div class="text-xs text-gray-400 mb-2">2025</div>
+                <div class="text-xl font-bold">$7M</div>
+            </div>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+                <div class="text-xs text-gray-400 mb-2">2026</div>
+                <div class="text-xl font-bold">$30M</div>
+                <div class="text-[10px] text-green-500">+329%</div>
+            </div>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+                <div class="text-xs text-gray-400 mb-2">2027</div>
+                <div class="text-xl font-bold">$70M</div>
+                <div class="text-[10px] text-green-500">+133%</div>
+            </div>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+                <div class="text-xs text-gray-400 mb-2">2028</div>
+                <div class="text-xl font-bold">$135M</div>
+                 <div class="text-[10px] text-green-500">+93%</div>
+            </div>
+            <div class="p-4 bg-black text-white rounded-lg shadow-xl transform scale-105">
+                <div class="text-xs text-gray-400 mb-2">2029</div>
+                <div class="text-xl font-bold">$260M</div>
+                 <div class="text-[10px] text-green-400">+93%</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Whitepaper & Partners -->
+    <section id="whitepaper" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-t border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div class="bg-black text-white p-12 rounded-2xl reveal-text">
+                <h3 class="text-3xl font-bold mb-6"><span class="lang-en">Whitepaper</span><span class="lang-zh">白皮書</span></h3>
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    <span class="lang-en">Comprehensive introduction to the technical architecture, tokenomics, and business model of the world's first AI-native film asset exchange.</span>
+                    <span class="lang-zh">全面介紹全球首個AI原生電影數字資產交易所的技術創新、商業模式、代幣經濟學和發展路線圖。</span>
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                        <span class="lang-en">Download EN</span><span class="lang-zh">下載英文版</span>
+                    </button>
+                    <button class="border border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white/10 transition">
+                        <span class="lang-en">Download ZH</span><span class="lang-zh">下載中文版</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Memory Cortex -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
-                <div class="md:col-span-4 border-t-2 border-black pt-6">
-                    <span class="font-mono text-xs text-gray-400 mb-4 block">02 / Storage</span>
-                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Memory Cortex</span><span class="lang-zh">記憶皮層</span></h3>
-                    <p class="text-gray-600 mb-6">
-                        <span class="lang-en">Solving "AI Amnesia" through structured layered architecture for true long-term companionship.</span>
-                        <span class="lang-zh">解決大型語言模型「AI遺忘症」的根本挑戰，通過結構化的分層架構實現真正的長期陪伴關係。</span>
-                    </p>
-                    <div class="text-5xl opacity-10">💾</div>
-                </div>
-                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Working Memory</span><span class="lang-zh">工作記憶</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Immediate context processing.</span><span class="lang-zh">處理當前對話的即時上下文。</span></p>
+            <div class="reveal-text delay-100">
+                <h3 class="text-2xl font-bold mb-8"><span class="lang-en">Strategic Partners</span><span class="lang-zh">戰略合作夥伴</span></h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        HKAIIFF
                     </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Episodic Memory</span><span class="lang-zh">情景記憶</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Auto-identify events in "5W" format.</span><span class="lang-zh">以結構化的「5W」格式編碼存儲關鍵事件。</span></p>
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        404.world
                     </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Semantic Memory</span><span class="lang-zh">語義記憶</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Long-term knowledge graph.</span><span class="lang-zh">長期知識庫，存入結構化的知識圖譜中。</span></p>
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        Solana
                     </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Consolidation</span><span class="lang-zh">記憶鞏固</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Simulating human forgetting mechanism.</span><span class="lang-zh">模擬人腦機制，允許不重要細節自然遺忘。</span></p>
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        AWS
                     </div>
-                </div>
-            </div>
-
-            <!-- Interaction Engine -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
-                <div class="md:col-span-4 border-t-2 border-black pt-6">
-                    <span class="font-mono text-xs text-gray-400 mb-4 block">03 / Interface</span>
-                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Interaction Engine</span><span class="lang-zh">互動引擎</span></h3>
-                    <p class="text-gray-600 mb-6">
-                        <span class="lang-en">Multi-modal perception and context understanding for natural, fluid interaction.</span>
-                        <span class="lang-zh">互動引擎通過多模態感知和上下文理解，為數字生命體提供自然、流暢的交互能力。</span>
-                    </p>
-                    <div class="text-5xl opacity-10">💬</div>
-                </div>
-                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Multi-modal</span><span class="lang-zh">多模態感知</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Visual, auditory, and tactile input.</span><span class="lang-zh">整合視覺、聽覺和觸覺輸入。</span></p>
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        CertiK
                     </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Context Mgmt</span><span class="lang-zh">上下文管理</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Deep understanding of flow.</span><span class="lang-zh">基於深度上下文理解，維持對話連貫。</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Voice System</span><span class="lang-zh">語音交互</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Advanced recognition & synthesis.</span><span class="lang-zh">先進的語音識別與合成技術。</span></p>
-                    </div>
-                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
-                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Emotional Exp</span><span class="lang-zh">情感化表達</span></h4>
-                        <p class="text-xs text-gray-500"><span class="lang-en">Tone, expression, and gestures.</span><span class="lang-zh">通過語音語調、面部表情表達情感。</span></p>
+                    <div class="border border-gray-200 p-6 flex items-center justify-center font-bold text-gray-400 hover:text-black hover:border-black transition-all">
+                        Deloitte
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Products -->
-    <section id="products" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-b border-gray-200">
-        <div class="flex justify-between items-end mb-12 reveal-text">
-            <h2 class="text-3xl font-bold tracking-tight"><span class="lang-en">Product Suite</span><span class="lang-zh">產品套件</span></h2>
-            <span class="text-xs font-mono text-gray-400">Complete Solution</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- BeingMe -->
-            <div class="bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text group">
-                <div class="flex justify-between items-start mb-6">
-                    <span class="font-mono text-xs text-gray-400">01</span>
-                    <span class="px-2 py-1 bg-black text-white rounded text-[10px] font-bold font-mono">Personal</span>
-                </div>
-                <h3 class="text-2xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
-                    BeingMe
-                    <span class="block text-sm font-normal text-gray-500 mt-1"><span class="lang-en">Your Personal AI Companion</span><span class="lang-zh">你的個人AI伴侶</span></span>
-                </h3>
-                <p class="text-sm text-gray-600 leading-relaxed mb-8">
-                    <span class="lang-en">Not an external assistant, but an organic extension of self. A partner in thought, guardian of memory, and tool for self-actualization.</span>
-                    <span class="lang-zh">BeingMe並非外部的智能助手，而是用戶自我的有機延伸。它是一個思想的夥伴、記憶的守護者，以及實現自我實現的強大工具。</span>
-                </p>
-                <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">🧠 <span class="lang-en">Cognition</span><span class="lang-zh">認知增強</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Offload cognitive tasks.</span><span class="lang-zh">外包繁雜認知任務。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">📔 <span class="lang-en">Life Log</span><span class="lang-zh">生命日誌</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Narrative identity avatar.</span><span class="lang-zh">敘事身份的活化身。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">🚪 <span class="lang-en">Gateway</span><span class="lang-zh">個性化網關</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Trusted agent interface.</span><span class="lang-zh">可信賴的代理人。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">❤️ <span class="lang-en">Wellness</span><span class="lang-zh">情感健康</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Non-judgmental space.</span><span class="lang-zh">絕對私密的安全空間。</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BeingHer -->
-            <div class="bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text delay-100 group">
-                <div class="flex justify-between items-start mb-6">
-                    <span class="font-mono text-xs text-gray-400">02</span>
-                    <span class="px-2 py-1 bg-black text-white rounded text-[10px] font-bold font-mono">Creator</span>
-                </div>
-                <h3 class="text-2xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
-                    BeingHer
-                    <span class="block text-sm font-normal text-gray-500 mt-1"><span class="lang-en">AI-Native Media Foundry</span><span class="lang-zh">AI原生媒體鑄造廠</span></span>
-                </h3>
-                <p class="text-sm text-gray-600 leading-relaxed mb-8">
-                    <span class="lang-en">Empowering creators to become "World Builders", creating entire populations of autonomous intelligent beings.</span>
-                    <span class="lang-zh">賦予創造者前所未有的力量——不再是僅僅創造單個角色，而是能夠創造擁有自主智能的整個「AI種群」，蛻變為「世界構建者」。</span>
-                </p>
-                <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">🎨 <span class="lang-en">Studio</span><span class="lang-zh">角色工作室</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Design AI "Genes".</span><span class="lang-zh">設計AI生命體「基因」。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">🌍 <span class="lang-en">Simulation</span><span class="lang-zh">世界模擬器</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Observe emergent behavior.</span><span class="lang-zh">觀察與引導湧現行為。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">📦 <span class="lang-en">Deploy</span><span class="lang-zh">多格式部署</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Game engines & films.</span><span class="lang-zh">導出至遊戲或互動電影。</span></p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs mb-1">🧬 <span class="lang-en">Diversity</span><span class="lang-zh">多樣化創造</span></h4>
-                        <p class="text-[10px] text-gray-400"><span class="lang-en">Any form of life.</span><span class="lang-zh">創造任何形式的生命體。</span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Architecture -->
-    <section id="trust" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-text">
-            <div>
-                <h2 class="text-4xl font-bold mb-4">
-                    <span class="lang-en">Trust Architecture</span><span class="lang-zh">信任架構</span>
-                </h2>
-                <p class="text-gray-500"><span class="lang-en">New standards for security, privacy, and legacy.</span><span class="lang-zh">安全、隱私與遺產的新標準。</span></p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-gray-200 mb-12 reveal-text">
-            <div class="border-r border-b lg:border-b-0 border-gray-200 p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
-                <span class="text-xs font-mono opacity-50 mb-6 block">01 / Privacy</span>
-                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Federated Privacy</span><span class="lang-zh">源於設計的隱私</span></h3>
-                <p class="text-xs opacity-50 leading-relaxed mt-4">
-                    <span class="lang-en">Using Federated Learning and Differential Privacy. Data never leaves your device.</span>
-                    <span class="lang-zh">採用聯邦學習與差分隱私技術。個性化訓練在本地進行，原始數據永不離開設備。</span>
-                </p>
-            </div>
-
-            <div class="border-r border-b lg:border-b-0 border-gray-200 p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
-                <span class="text-xs font-mono opacity-50 mb-6 block">02 / Identity</span>
-                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Decentralized IDs</span><span class="lang-zh">去中心化身份(DIDs)</span></h3>
-                <p class="text-xs opacity-50 leading-relaxed mt-4">
-                    <span class="lang-en">Blockchain-based DIDs for every user and Being. Ownership proven by private keys.</span>
-                    <span class="lang-zh">基於區塊鏈的去中心化標識符(DID)。用戶通過私鑰證明所有權，無需中心化許可。</span>
-                </p>
-            </div>
-
-            <div class="p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
-                <span class="text-xs font-mono opacity-50 mb-6 block">03 / Legacy</span>
-                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Legacy Protocol</span><span class="lang-zh">數字遺產協議</span></h3>
-                <p class="text-xs opacity-50 leading-relaxed mt-4">
-                    <span class="lang-en">Cryptographic transfer of control to executors. Pre-set "afterlife" behavioral rules.</span>
-                    <span class="lang-zh">通過密碼學協議安全轉移DID控制權。設定詳盡的「身後行為準則」。</span>
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Ecosystem -->
-    <section id="ecosystem" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-b border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
-            <div class="md:col-span-4">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6 reveal-text">
-                    <span class="lang-en">The Ecosystem</span>
-                    <span class="lang-zh">生態系統</span>
-                </h2>
-                <span class="inline-block px-3 py-1 rounded-full border border-gray-300 text-xs font-mono text-gray-500 uppercase reveal-text delay-100">// Decentralized Creator Economy</span>
-            </div>
-            <div class="md:col-span-8">
-                <p class="text-xl font-light text-gray-600 mb-12 reveal-text">
-                    <span class="lang-en">Cultivating a decentralized creator economy where every participant contributes and benefits.</span>
-                    <span class="lang-zh">培育去中心化的創造者經濟，讓每個參與者都能貢獻並從中獲益。</span>
-                </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-text">
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">👤 <span class="lang-en">Users</span><span class="lang-zh">用戶</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">The cornerstone. Contribute data/attention, gain empowerment tools.</span>
-                            <span class="lang-zh">生態基石，貢獻數據與注意力，獲得個人賦能工具。</span>
-                        </p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">🎨 <span class="lang-en">Creators</span><span class="lang-zh">創造者</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">The soul. Design AI lifeforms and worlds, injecting diverse content.</span>
-                            <span class="lang-zh">生態靈魂，設計AI生命體和互動世界，注入多元內容。</span>
-                        </p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">💻 <span class="lang-en">Developers</span><span class="lang-zh">開發者</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">Build "Skills" and "Personality Packs" to extend functionality.</span>
-                            <span class="lang-zh">功能擴展者，為Being構建「技能」和「人格包」。</span>
-                        </p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">🏪 <span class="lang-en">Marketplace</span><span class="lang-zh">市場</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">Trade core components: skills, skins, personalities, and finished Beings.</span>
-                            <span class="lang-zh">交易AI生命體核心組件，包括技能、人格包、外觀與成品。</span>
-                        </p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">☁️ <span class="lang-en">Infrastructure</span><span class="lang-zh">基礎設施</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">Distributed compute and storage supporting the ecosystem.</span>
-                            <span class="lang-zh">提供分布式計算與存儲，支撐整個生態運行。</span>
-                        </p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
-                        <h4 class="font-bold mb-2">🛡️ <span class="lang-en">Security</span><span class="lang-zh">安全服務</span></h4>
-                        <p class="text-sm text-gray-600">
-                            <span class="lang-en">Ensure privacy, data security, and system integrity.</span>
-                            <span class="lang-zh">確保用戶隱私和數據安全，維護系統完整性。</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Partners -->
-    <section id="partners" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto">
-        <h2 class="text-3xl font-bold mb-16 text-center reveal-text"><span class="lang-en">Our Partners</span><span class="lang-zh">合作夥伴</span></h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 reveal-text">
-            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
-                <div class="text-4xl mb-4">🤖</div>
-                <h3 class="font-bold mb-2">AI Future Group</h3>
-                <p class="text-xs text-gray-500"><span class="lang-en">OS & Infrastructure</span><span class="lang-zh">底層操作系統支持</span></p>
-            </div>
-            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
-                <div class="text-4xl mb-4">👓</div>
-                <h3 class="font-bold mb-2">404Glass</h3>
-                <p class="text-xs text-gray-500"><span class="lang-en">AR Hardware</span><span class="lang-zh">AR設備合作夥伴</span></p>
-            </div>
-            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
-                <div class="text-4xl mb-4">🧠</div>
-                <h3 class="font-bold mb-2">NeuroTech Labs</h3>
-                <p class="text-xs text-gray-500"><span class="lang-en">Cognitive Science</span><span class="lang-zh">認知科學研究</span></p>
-            </div>
-            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
-                <div class="text-4xl mb-4">⛓️</div>
-                <h3 class="font-bold mb-2">BlockSecure</h3>
-                <p class="text-xs text-gray-500"><span class="lang-en">Blockchain Security</span><span class="lang-zh">區塊鏈安全</span></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer / CTA -->
-    <footer id="contact" class="bg-black text-white pt-24 pb-8 px-6 md:px-8 mt-24">
+    <!-- Footer -->
+    <footer class="bg-black text-white pt-24 pb-8 px-6 md:px-8 mt-24">
         <div class="max-w-[1920px] mx-auto">
             <div class="flex flex-col items-center justify-center mb-24 text-center reveal-text">
-                <h2 class="text-[8vw] md:text-[6vw] font-bold tracking-tighter leading-none mb-8">
-                    Start Your Existence.
+                <h2 class="text-[10vw] font-bold tracking-tighter leading-none mb-8">
+                    Start Trading.
                 </h2>
-                <div class="flex gap-4">
-                    <a href="#demo" class="inline-block px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform duration-300">
-                        <span class="lang-en">Apply for Demo</span><span class="lang-zh">申請體驗資格</span>
-                    </a>
-                    <a href="#contact" class="inline-block px-12 py-5 border border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-black transition-all duration-300">
-                        <span class="lang-en">Partner With Us</span><span class="lang-zh">成為合作夥伴</span>
-                    </a>
+                <div class="max-w-md w-full flex border-b border-white/30 pb-2 mb-8">
+                    <input type="email" placeholder="Enter your email" class="bg-transparent border-none w-full text-white placeholder-gray-500 focus:ring-0 focus:outline-none">
+                    <button class="text-white font-bold hover:text-gray-300 uppercase text-xs tracking-widest">Subscribe</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-t border-white/20 pt-12">
                 <div class="col-span-1 md:col-span-2">
-                    <a href="#" class="text-2xl font-bold block mb-4">BeingOS.</a>
+                    <a href="#" class="text-2xl font-bold block mb-4">AIF EXCHANGE.</a>
                     <p class="text-gray-400 text-sm max-w-xs leading-relaxed">
-                        <span class="lang-en">The foundational operating system for digital existence. From "IP protection" to "User Sovereignty".</span>
-                        <span class="lang-zh">數字存在的基礎操作系統。開啟從「IP保護」到「用戶主權」的範式革命。</span>
+                        <span class="lang-en">The world's first AI-native film industry digital asset exchange, providing professional financial infrastructure for the creative economy.</span>
+                        <span class="lang-zh">全球首個專注於AI原生電影產業的數字資產交易所，為創意經濟提供專業的金融基礎設施。</span>
                     </p>
                 </div>
                 
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Products</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Platform</h4>
                     <ul class="space-y-3 text-sm font-medium text-gray-300">
-                        <li><a href="#" class="hover:text-white">BeingMe</a></li>
-                        <li><a href="#" class="hover:text-white">BeingHer</a></li>
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">World Engine</span><span class="lang-zh">AI世界引擎</span></a></li>
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">Marketplace</span><span class="lang-zh">市場</span></a></li>
+                        <li><a href="#trading" class="hover:text-white">Spot Trading</a></li>
+                        <li><a href="#" class="hover:text-white">Derivatives</a></li>
+                        <li><a href="#" class="hover:text-white">ITO Platform</a></li>
+                        <li><a href="#" class="hover:text-white">Fees</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Resources</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Legal</h4>
                     <ul class="space-y-3 text-sm font-medium text-gray-300">
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">Documentation</span><span class="lang-zh">開發者文檔</span></a></li>
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">Whitepaper</span><span class="lang-zh">白皮書</span></a></li>
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">About Us</span><span class="lang-zh">關於我們</span></a></li>
-                        <li><a href="#" class="hover:text-white"><span class="lang-en">Contact</span><span class="lang-zh">聯繫我們</span></a></li>
+                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Risk Disclosure</a></li>
+                        <li><a href="#" class="hover:text-white">Compliance</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="mt-20 flex justify-between items-end text-[10px] uppercase text-gray-500 font-mono">
-                <p>&copy; 2025 BeingOS. All Rights Reserved.</p>
-                <div class="flex gap-4">
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                </div>
+                <p>&copy; 2026 AIF Exchange. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
+        // Safely get from localStorage
+        function getStorage(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('LocalStorage access denied:', e);
+                return null;
+            }
+        }
+
+        // Safely set to localStorage
+        function setStorage(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                console.warn('LocalStorage access denied:', e);
+            }
+        }
+
         // Language Toggle
         function toggleLanguage() {
             const body = document.body;
             const currentLang = body.getAttribute('data-lang');
             const newLang = currentLang === 'en' ? 'zh' : 'en';
             body.setAttribute('data-lang', newLang);
-            // Optional: Save preference
-            // localStorage.setItem('preferredLanguage', newLang);
+            setStorage('preferredLanguage', newLang);
         }
 
-        // Mobile Menu Toggle
-        const menuBtn = document.getElementById('menu-btn');
+        // Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        function toggleMenu() {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('hamburger-active');
             mobileMenu.classList.toggle('open');
-            
-            // Toggle Hamburger Icon Animation
-            const spans = menuBtn.querySelectorAll('span');
+            // Prevent scrolling when menu is open
             if(mobileMenu.classList.contains('open')) {
-                // Open state: X shape
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                document.body.style.overflow = 'hidden';
             } else {
-                // Closed state: Hamburger shape
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
+                document.body.style.overflow = 'auto';
             }
-        }
+        });
 
-        menuBtn.addEventListener('click', toggleMenu);
+        function closeMenu() {
+            mobileMenuBtn.classList.remove('hamburger-active');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
 
         // Intersection Observer for Reveal
         const observer = new IntersectionObserver((entries) => {
@@ -779,6 +820,12 @@
 
         // Initialize on DOM Load
         document.addEventListener('DOMContentLoaded', function() {
+            // Set language from localStorage
+            const savedLang = getStorage('preferredLanguage');
+            if (savedLang) {
+                document.body.setAttribute('data-lang', savedLang);
+            }
+
             // Observe all reveal elements
             document.querySelectorAll('.reveal-text').forEach(el => {
                 observer.observe(el);
