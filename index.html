@@ -1,1713 +1,789 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeingOS - 數字存在的操作系統</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>BeingOS - Digital Existence Operating System</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        black: '#1a1a1a', 
+                        offblack: '#222222',
+                        white: '#ffffff',
+                        offwhite: '#f9f9f9',
+                        gray: {
+                            100: '#f3f3f3',
+                            200: '#e5e5e5',
+                            500: '#737373',
+                            900: '#111111'
+                        }
+                    },
+                    animation: {
+                        'marquee': 'marquee 40s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary: #3498db;
-            --secondary: #8e44ad;
-            --accent: #00ff9d;
-            --dark-bg: #0a0a0a;
-            --card-bg: rgba(26, 32, 44, 0.7);
-            --text-light: #ffffff;
-            --text-gray: #b0b0b0;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-light);
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(142, 68, 173, 0.1) 0%, transparent 20%);
-            line-height: 1.6;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* 導航欄樣式 */
-        .navbar {
-            background-color: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 255, 157, 0.1);
-            padding: 15px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .logo-main {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
-        }
-        
-        .logo-sub {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-top: -3px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            position: relative;
-            padding: 5px 0;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.3s;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
-        }
-        
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        
-        .btn-outline:hover {
-            background-color: rgba(0, 255, 157, 0.1);
-            transform: translateY(-3px);
-        }
-        
-        /* 主視覺區域 */
-        .hero {
-            padding: 180px 0 100px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            color: var(--text-gray);
-            margin-bottom: 40px;
-            max-width: 700px;
-        }
-        
-        .hero-btns {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 50px;
-        }
-        
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 50px;
-        }
-        
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.15);
-        }
-        
-        .stat-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-        
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .stat-desc {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-        }
-        
-        /* 內容區塊通用樣式 */
-        .section {
-            padding: 100px 0;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 2px;
-        }
-        
-        .section-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        /* 卡片通用樣式 */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 255, 157, 0.2);
-            border-color: rgba(0, 255, 157, 0.3);
-        }
-        
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(142, 68, 173, 0.2));
-        }
-        
-        .card-icon i {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .card-content {
-            color: var(--text-gray);
-        }
-        
-        /* 範式革命部分 */
-        .paradigm-section {
-            background: linear-gradient(135deg, rgba(26, 32, 44, 0.9), rgba(10, 10, 10, 0.95));
-            position: relative;
-        }
-        
-        .paradigm-comparison {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-        }
-        
-        .paradigm-card {
-            padding: 30px;
-            border-radius: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .paradigm-card.staros {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(10, 10, 10, 0.7));
-            border: 1px solid rgba(52, 152, 219, 0.3);
-        }
-        
-        .paradigm-card.beingos {
-            background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(10, 10, 10, 0.7));
-            border: 1px solid rgba(142, 68, 173, 0.3);
-        }
-        
-        .paradigm-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .paradigm-title::before {
-            content: '';
-            display: inline-block;
-            width: 10px;
-            height: 30px;
-            margin-right: 15px;
-            border-radius: 5px;
-        }
-        
-        .staros .paradigm-title::before {
-            background: var(--primary);
-        }
-        
-        .beingos .paradigm-title::before {
-            background: var(--secondary);
-        }
-        
-        .paradigm-points {
-            margin-top: 20px;
-        }
-        
-        .paradigm-point {
-            display: flex;
-            margin-bottom: 15px;
-        }
-        
-        .point-icon {
-            min-width: 30px;
-            margin-right: 15px;
-            font-size: 1.2rem;
-        }
-        
-        .staros .point-icon {
-            color: var(--primary);
-        }
-        
-        .beingos .point-icon {
-            color: var(--secondary);
-        }
-        
-        .point-content h4 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .point-content p {
-            color: var(--text-gray);
-            font-size: 0.95rem;
-        }
-        
-        /* 核心支柱部分 */
-        .pillars-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-        }
-        
-        .pillar-card {
-            text-align: center;
-        }
-        
-        .pillar-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(142, 68, 173, 0.2));
-            font-size: 2rem;
-            color: var(--accent);
-        }
-        
-        .pillar-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .pillar-desc {
-            color: var(--text-gray);
-        }
-        
-        /* 技術架構部分 */
-        .architecture-section {
-            background: linear-gradient(135deg, rgba(26, 32, 44, 0.9), rgba(10, 10, 10, 0.95));
-        }
-        
-        .architecture-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .tab {
-            padding: 12px 25px;
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            color: var(--text-light);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 30px;
-            margin: 5px;
-        }
-        
-        .tab:hover {
-            background: rgba(52, 152, 219, 0.2);
-        }
-        
-        .tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .architecture-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-        
-        .architecture-image {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .architecture-image-placeholder {
-            font-size: 3rem;
-            color: var(--accent);
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .architecture-details {
-            padding: 20px;
-        }
-        
-        .architecture-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--accent);
-        }
-        
-        .architecture-features {
-            margin-top: 30px;
-        }
-        
-        .feature-item {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        
-        .feature-icon {
-            min-width: 40px;
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-right: 15px;
-        }
-        
-        .feature-content h4 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-        
-        .feature-content p {
-            color: var(--text-gray);
-        }
-        
-        /* 產品套件部分 */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-        }
-        
-        .product-card {
-            padding: 30px;
-            border-radius: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .product-card.beingme {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(10, 10, 10, 0.8));
-            border: 1px solid rgba(52, 152, 219, 0.3);
-        }
-        
-        .product-card.beingher {
-            background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(10, 10, 10, 0.8));
-            border: 1px solid rgba(142, 68, 173, 0.3);
-        }
-        
-        .product-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .product-title span {
-            color: var(--accent);
-            margin-right: 10px;
-        }
-        
-        .product-desc {
-            color: var(--text-gray);
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-        }
-        
-        .product-features {
-            margin-top: 30px;
-        }
-        
-        .product-feature {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        
-        .product-feature-icon {
-            min-width: 30px;
-            font-size: 1.2rem;
-            color: var(--accent);
-            margin-right: 15px;
-        }
-        
-        .product-feature-content h4 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-        
-        .product-feature-content p {
-            color: var(--text-gray);
-            font-size: 0.95rem;
-        }
-        
-        /* 信任架構部分 */
-        .trust-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-        
-        .trust-card {
-            text-align: center;
-            padding: 30px;
-        }
-        
-        .trust-icon {
-            font-size: 3rem;
-            margin-bottom: 25px;
-            color: var(--accent);
-        }
-        
-        .trust-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        
-        .trust-desc {
-            color: var(--text-gray);
-        }
-        
-        /* 生態系統部分 - 重新設計 */
-        .ecosystem-section {
-            background: linear-gradient(135deg, rgba(26, 32, 44, 0.9), rgba(10, 10, 10, 0.95));
-        }
-        
-        .ecosystem-diagram {
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            padding: 50px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .ecosystem-center {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 60px;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
-        }
-        
-        .ecosystem-center h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .ecosystem-center p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            text-align: center;
-            max-width: 160px;
-        }
-        
-        .ecosystem-nodes {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            width: 100%;
-        }
-        
-        .ecosystem-node {
-            padding: 25px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-        
-        .ecosystem-node:hover {
-            transform: translateY(-10px);
-            border: 1px solid rgba(0, 255, 157, 0.3);
-        }
-        
-        .ecosystem-node-icon {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-        
-        .ecosystem-node-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .ecosystem-node-desc {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-        
-        /* 合作夥伴部分 */
-        .partners-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-        
-        .partner-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .partner-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 255, 157, 0.2);
-        }
-        
-        .partner-logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            color: var(--accent);
-        }
-        
-        .partner-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .partner-desc {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-        
-        /* CTA 部分 */
-        .cta-section {
-            padding: 120px 0;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(26, 32, 44, 0.9), rgba(10, 10, 10, 0.95));
-            position: relative;
-        }
-        
-        .cta-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .cta-desc {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
-        
-        .cta-btns {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        /* 頁腳部分 */
-        .footer {
-            padding: 80px 0 40px;
-            background: rgba(5, 5, 5, 0.95);
-        }
-        
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-        }
-        
-        .footer-logo {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        
-        .footer-desc {
-            color: var(--text-gray);
-            margin-bottom: 25px;
-            max-width: 400px;
-        }
-        
-        .footer-social {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--accent);
-            font-size: 1.2rem;
-            transition: all 0.3s;
-        }
-        
-        .social-icon:hover {
-            background: var(--accent);
-            color: #000;
-            transform: translateY(-5px);
-        }
-        
-        .footer-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            position: relative;
-        }
-        
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--accent);
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 15px;
-        }
-        
-        .footer-links a {
-            color: var(--text-gray);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-        
-        .footer-bottom {
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-        
-        /* 響應式設計 */
-        @media (max-width: 1200px) {
-            .ecosystem-nodes {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .paradigm-comparison {
-                grid-template-columns: 1fr;
-            }
-            
-            .pillars-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .architecture-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .trust-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .partners-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .ecosystem-nodes {
-                grid-template-columns: 1fr;
-                max-width: 500px;
-                margin: 0 auto;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .hero-btns {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .trust-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .partners-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .cta-title {
-                font-size: 2.2rem;
-            }
-            
-            .ecosystem-center {
-                width: 160px;
-                height: 160px;
-            }
-        }
-        
-        /* 添加動畫效果 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-on-scroll {
-            animation: fadeInUp 0.8s ease-out forwards;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* 語言切換邏輯 */
+        body[data-lang="en"] .lang-zh { display: none !important; }
+        body[data-lang="zh"] .lang-en { display: none !important; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fff; }
+        ::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ccc; }
+
+        .academy-btn {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .academy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .reveal-text { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .reveal-text.active { opacity: 1; transform: translateY(0); }
+        
+        /* 移動端菜單樣式 - 修復後確保全屏覆蓋 */
+        #mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out;
+            transform: translateY(-100%);
             opacity: 0;
+            pointer-events: none; /* 關閉時不阻擋點擊 */
         }
-        
-        /* 修復技術架構標籤切換問題 */
-        .tab-content:not(.active) {
-            display: none;
-        }
-        
-        /* 修復產品套件佈局 */
-        .product-card {
-            margin-bottom: 30px;
+        #mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
-<body>
-    <!-- 導航欄 -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo">
-                <div class="logo-main">BeingOS</div>
-                <div class="logo-sub">Digital Existence Operating System</div>
-            </div>
+
+<body data-lang="en" class="bg-white text-black selection:bg-black selection:text-white">
+
+    <!-- 導航欄 - 確保 z-index 高於移動菜單 -->
+    <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 transition-all duration-300">
+        <div class="px-4 md:px-8 py-3 md:py-4 flex justify-between items-center max-w-[1920px] mx-auto relative z-50 bg-white/95">
             
-            <div class="nav-links">
-                <a href="#vision">願景</a>
-                <a href="#architecture">技術架構</a>
-                <a href="#products">產品套件</a>
-                <a href="#trust">信任架構</a>
-                <a href="#ecosystem">生態系統</a>
-                <a href="#partners">合作夥伴</a>
-            </div>
+            <!-- Logo 區域 -->
+            <a href="#" class="flex items-center gap-3 group flex-shrink-0">
+                <!-- Logo Icon -->
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-black text-white flex items-center justify-center font-bold text-lg md:text-xl rounded-full group-hover:scale-105 transition-transform flex-shrink-0">B</div>
+                
+                <div class="flex flex-col leading-tight">
+                    <span class="text-base md:text-lg font-bold tracking-tight">BeingOS.</span>
+                    <span class="hidden sm:block text-[0.6rem] font-mono uppercase tracking-wider text-gray-500 group-hover:text-black transition-colors">
+                        <span class="lang-en">Digital Existence Operating System</span>
+                        <span class="lang-zh">數字存在的操作系統</span>
+                    </span>
+                </div>
+            </a>
             
-            <div class="nav-actions">
-                <a href="#contact" class="btn btn-outline">聯繫合作</a>
-                <a href="#demo" class="btn btn-primary">體驗演示</a>
+            <!-- 桌面端菜單鏈接 -->
+            <div class="hidden xl:flex items-center gap-1 text-[13px] font-medium tracking-wide absolute left-1/2 transform -translate-x-1/2">
+                <a href="#vision" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Vision</span><span class="lang-zh">願景</span></a>
+                <a href="#architecture" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Architecture</span><span class="lang-zh">技術架構</span></a>
+                <a href="#products" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Products</span><span class="lang-zh">產品套件</span></a>
+                <a href="#trust" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Trust</span><span class="lang-zh">信任架構</span></a>
+                <a href="#ecosystem" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Ecosystem</span><span class="lang-zh">生態系統</span></a>
+                <a href="#partners" class="px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"><span class="lang-en">Partners</span><span class="lang-zh">合作夥伴</span></a>
+            </div>
+
+            <!-- 右側按鈕區域 -->
+            <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
+                <button onclick="toggleLanguage()" class="text-[10px] md:text-xs font-mono border border-gray-200 px-2 md:px-3 py-1.5 rounded-full hover:bg-black hover:text-white transition-all uppercase flex-shrink-0">
+                    <span class="lang-en">繁中</span><span class="lang-zh">EN</span>
+                </button>
+                
+                <a href="#demo" class="hidden md:flex bg-black text-white text-[13px] font-medium px-6 py-3 rounded-full academy-btn items-center gap-2 flex-shrink-0">
+                    <span class="lang-en">Live Demo</span><span class="lang-zh">體驗演示</span>
+                </a>
+
+                <!-- 漢堡菜單按鈕 -->
+                <button id="menu-btn" class="xl:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 flex-shrink-0 p-1 group">
+                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
+                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
+                    <span class="w-5 md:w-6 h-0.5 bg-black transition-all origin-center group-hover:bg-gray-600"></span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- 主視覺區域 -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>重新定義數字存在<br>構建AI原生數字生命世界</h1>
-                <p>BeingOS 是為數字存在打造的基礎操作系統，賦能每個個體創造、管理並部署自主的AI生命體，開啟從"IP保護"到"用戶主權"的範式革命。</p>
-                
-                <div class="hero-btns">
-                    <a href="#vision" class="btn btn-primary">探索願景</a>
-                    <a href="#demo" class="btn btn-outline">觀看演示</a>
+    <!-- 移動端全屏菜單 - 已移出 Nav 標籤，放置於 Body 下 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white/98 z-40 flex flex-col justify-start items-center pt-32 pb-10 xl:hidden">
+        <div class="flex flex-col items-center gap-6 text-xl font-medium w-full">
+            <a href="#vision" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Vision</span><span class="lang-zh">願景</span></a>
+            <a href="#architecture" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Architecture</span><span class="lang-zh">技術架構</span></a>
+            <a href="#products" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Products</span><span class="lang-zh">產品套件</span></a>
+            <a href="#trust" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Trust</span><span class="lang-zh">信任架構</span></a>
+            <a href="#ecosystem" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Ecosystem</span><span class="lang-zh">生態系統</span></a>
+            <a href="#partners" class="mobile-link py-2 w-full text-center hover:bg-gray-50 transition-colors" onclick="toggleMenu()"><span class="lang-en">Partners</span><span class="lang-zh">合作夥伴</span></a>
+            
+            <div class="w-20 h-px bg-gray-200 my-4"></div>
+            
+            <a href="#demo" class="mobile-link text-black font-bold py-2 w-full text-center hover:bg-gray-50" onclick="toggleMenu()"><span class="lang-en">Live Demo</span><span class="lang-zh">體驗演示</span></a>
+            <a href="#contact" class="mobile-link text-gray-500 py-2 w-full text-center hover:bg-gray-50" onclick="toggleMenu()"><span class="lang-en">Contact</span><span class="lang-zh">聯繫合作</span></a>
+        </div>
+    </div>
+
+    <!-- Header / Hero Section -->
+    <header class="relative pt-32 pb-20 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <div class="md:col-span-8">
+                <div class="mb-6 inline-flex items-center gap-2 border border-gray-200 rounded-full px-3 py-1 bg-gray-50">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span class="text-[10px] uppercase tracking-widest font-mono font-medium text-gray-500">
+                        <span class="lang-en">From IP Protection to User Sovereignty</span>
+                        <span class="lang-zh">從IP保護到用戶主權</span>
+                    </span>
                 </div>
                 
-                <div class="hero-stats">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-icon"><i class="fas fa-brain"></i></div>
-                        <div class="stat-number">4層</div>
-                        <div class="stat-desc">人格引擎架構</div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.1] mb-10 text-black">
+                    <span class="lang-en">Redefining <br> Digital Existence.</span>
+                    <span class="lang-zh">重新定義數字存在<br>構建AI原生生命</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-gray-500 max-w-2xl leading-relaxed font-light">
+                    <span class="lang-en">BeingOS is the foundational operating system for digital existence, empowering every individual to create, manage, and deploy autonomous AI lifeforms.</span>
+                    <span class="lang-zh">BeingOS 是為數字存在打造的基礎操作系統，賦能每個個體創造、管理並部署自主的AI生命體，開啟從「IP保護」到「用戶主權」的範式革命。</span>
+                </p>
+
+                <div class="flex gap-4 mt-8 flex-wrap">
+                    <a href="#vision" class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors">
+                        <span class="lang-en">Explore Vision</span><span class="lang-zh">探索願景</span>
+                    </a>
+                    <a href="#demo" class="border border-gray-300 px-8 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors">
+                        <span class="lang-en">Watch Demo</span><span class="lang-zh">觀看演示</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="md:col-span-4 flex flex-col justify-end">
+                <div class="grid grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+                    <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
+                        <span class="block text-3xl font-bold mb-1">4<span class="text-sm font-normal text-gray-400">Layers</span></span>
+                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Personality Engine</span><span class="lang-zh">人格引擎架構</span></span>
                     </div>
-                    
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-icon"><i class="fas fa-memory"></i></div>
-                        <div class="stat-number">3種</div>
-                        <div class="stat-desc">記憶存儲機制</div>
+                    <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
+                        <span class="block text-3xl font-bold mb-1">3<span class="text-sm font-normal text-gray-400">Types</span></span>
+                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Memory Storage</span><span class="lang-zh">記憶存儲機制</span></span>
                     </div>
-                    
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div class="stat-number">100%</div>
-                        <div class="stat-desc">用戶數據主權</div>
+                    <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
+                        <span class="block text-3xl font-bold mb-1">100%</span>
+                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Data Sovereignty</span><span class="lang-zh">用戶數據主權</span></span>
                     </div>
-                    
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-icon"><i class="fas fa-infinity"></i></div>
-                        <div class="stat-number">∞</div>
-                        <div class="stat-desc">數字遺產傳承</div>
+                    <div class="bg-white p-6 hover:bg-gray-50 transition-colors">
+                        <span class="block text-3xl font-bold mb-1">∞</span>
+                        <span class="text-[10px] uppercase font-mono text-gray-400"><span class="lang-en">Digital Legacy</span><span class="lang-zh">數字遺產傳承</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marquee -->
+    <div class="border-b border-gray-200 py-6 overflow-hidden bg-gray-50">
+        <div class="whitespace-nowrap animate-marquee flex items-center gap-12 opacity-80 text-xs font-mono font-medium uppercase tracking-widest text-black">
+            <span>Personality Engine</span> <span>✦</span> <span>Memory Cortex</span> <span>✦</span> <span>Interaction Engine</span> <span>✦</span> <span>Decentralized ID</span> <span>✦</span>
+            <span>人格引擎</span> <span>✦</span> <span>記憶皮層</span> <span>✦</span> <span>互動引擎</span> <span>✦</span> <span>去中心化身份</span> <span>✦</span>
+            <span>Personality Engine</span> <span>✦</span> <span>Memory Cortex</span> <span>✦</span> <span>Interaction Engine</span> <span>✦</span> <span>Decentralized ID</span> <span>✦</span>
+        </div>
+    </div>
+
+    <!-- Vision / Paradigm Section -->
+    <section id="vision" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
+            <div class="md:col-span-4">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6 reveal-text">
+                    <span class="lang-en">Paradigm <br> Revolution.</span>
+                    <span class="lang-zh">範式 <br> 革命</span>
+                </h2>
+                <span class="inline-block px-3 py-1 rounded-full border border-gray-300 text-xs font-mono text-gray-500 uppercase reveal-text delay-100">// The New Standard</span>
+            </div>
+            <div class="md:col-span-8">
+                <p class="text-xl font-light text-gray-600 mb-12 reveal-text">
+                    <span class="lang-en">Fundamental difference from first-generation AI digital human platforms: Moving from IP protection to User Sovereignty.</span>
+                    <span class="lang-zh">BeingOS 與第一代AI數字人平台的根本性差異：從IP保護到用戶主權。</span>
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 reveal-text">
+                    <!-- Old Paradigm -->
+                    <div class="p-8 border border-gray-100 bg-gray-50 rounded-lg opacity-70 hover:opacity-100 transition-opacity">
+                        <h4 class="text-xs uppercase tracking-wider text-gray-500 mb-4"><span class="lang-en">StarOS: Old Paradigm</span><span class="lang-zh">StarOS：舊範式</span></h4>
+                        <p class="text-sm text-gray-500 mb-6 min-h-[40px]">
+                            <span class="lang-en">Centralized, top-down IP value migration protecting elite intellectual property.</span>
+                            <span class="lang-zh">以中心化、自上而下的名人IP價值遷移為核心，旨在保護少數精英的知識產權。</span>
+                        </p>
+                        <ul class="text-sm text-gray-500 space-y-4">
+                            <li class="flex gap-3">
+                                <span class="text-lg">👥</span>
+                                <div>
+                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Target</span><span class="lang-zh">目標受眾</span></strong>
+                                    <span class="lang-en">Celebrities, IP Holders</span><span class="lang-zh">頂級名人、IP持有者</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-lg">💾</span>
+                                <div>
+                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Control</span><span class="lang-zh">控制模型</span></strong>
+                                    <span class="lang-en">Centralized / Platform owned</span><span class="lang-zh">中心化 / 平台控制</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-lg">📉</span>
+                                <div>
+                                    <strong class="block text-gray-700 text-xs uppercase"><span class="lang-en">Economy</span><span class="lang-zh">經濟模型</span></strong>
+                                    <span class="lang-en">Licensing & Revenue Share</span><span class="lang-zh">IP授權與收入分成</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- New Paradigm -->
+                    <div class="p-8 border border-black bg-black text-white rounded-lg shadow-xl">
+                        <h4 class="text-xs uppercase tracking-wider text-gray-400 mb-4"><span class="lang-en">BeingOS: New Paradigm</span><span class="lang-zh">BeingOS：新範式</span></h4>
+                        <p class="text-sm text-gray-300 mb-6 min-h-[40px]">
+                            <span class="lang-en">Decentralized, bottom-up universal digital identity creation achieving user sovereignty.</span>
+                            <span class="lang-zh">致力於去中心化、自下而上的普世數字身份創造，實現用戶主權。</span>
+                        </p>
+                        <ul class="text-sm text-gray-300 space-y-4">
+                            <li class="flex gap-3">
+                                <span class="text-lg">🌍</span>
+                                <div>
+                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Target</span><span class="lang-zh">目標受眾</span></strong>
+                                    <span class="lang-en">Everyone, Creators, Developers</span><span class="lang-zh">每一個個體、創造者</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-lg">🔐</span>
+                                <div>
+                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Control</span><span class="lang-zh">控制模型</span></strong>
+                                    <span class="lang-en">Decentralized / 100% User Owned</span><span class="lang-zh">去中心化 / 100%用戶控制</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-lg">🚀</span>
+                                <div>
+                                    <strong class="block text-white text-xs uppercase"><span class="lang-en">Economy</span><span class="lang-zh">經濟模型</span></strong>
+                                    <span class="lang-en">Creator Economy & Subscription</span><span class="lang-zh">開放的創造者經濟</span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 願景與範式革命 -->
-    <section class="section paradigm-section" id="vision">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">範式革命</h2>
-                <p class="section-subtitle">BeingOS 與第一代AI數字人平台的根本性差異：從IP保護到用戶主權</p>
+    <!-- Four Pillars -->
+    <section class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200 bg-gray-50">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-text">
+            <div>
+                <h2 class="text-3xl font-bold mb-4">
+                    <span class="lang-en">Four Pillars of Sovereignty</span><span class="lang-zh">數字主權的四大支柱</span>
+                </h2>
+                <p class="text-gray-500 max-w-xl">
+                    <span class="lang-en">The vision of BeingOS is built upon four unshakable principles.</span>
+                    <span class="lang-zh">BeingOS 的願景建立在四大不可動搖的原則之上。</span>
+                </p>
             </div>
-            
-            <div class="paradigm-comparison">
-                <div class="paradigm-card staros animate-on-scroll">
-                    <h3 class="paradigm-title">StarOS：舊範式</h3>
-                    <p class="card-content">以中心化、自上而下的名人IP價值遷移為核心，旨在保護少數精英的知識產權。</p>
-                    
-                    <div class="paradigm-points">
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-users"></i></div>
-                            <div class="point-content">
-                                <h4>目標受眾</h4>
-                                <p>頂級名人、藝術家、IP持有者</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-database"></i></div>
-                            <div class="point-content">
-                                <h4>數據與控制模型</h4>
-                                <p>中心化；由經紀公司/平台控制</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-shield-alt"></i></div>
-                            <div class="point-content">
-                                <h4>安全目標</h4>
-                                <p>保護IP免遭未經授權的使用</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-chart-line"></i></div>
-                            <div class="point-content">
-                                <h4>經濟模型</h4>
-                                <p>IP授權與收入分成</p>
-                            </div>
-                        </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-text">
+            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
+                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🛡️</div>
+                <h3 class="font-bold mb-3"><span class="lang-en">Total User Control</span><span class="lang-zh">徹底的用戶控制</span></h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    <span class="lang-en">Users are the sole masters of their digital existence, possessing absolute rights to create, modify, or permanently delete.</span>
+                    <span class="lang-zh">用戶是其數字存在的唯一主宰者，擁有創造、修改、乃至永久刪除其數字生命體的絕對權利。</span>
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
+                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🔒</div>
+                <h3 class="font-bold mb-3"><span class="lang-en">Privacy by Design</span><span class="lang-zh">源於架構的隱私</span></h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    <span class="lang-en">Privacy is a mathematical guarantee via cryptography and system design, not just policy.</span>
+                    <span class="lang-zh">隱私不是政策條款，而是通過密碼學和系統設計實現的數學保證，平台無法訪問用戶原始私密數據。</span>
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
+                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">🎨</div>
+                <h3 class="font-bold mb-3"><span class="lang-en">Open Democratization</span><span class="lang-zh">開放與民主化的創造</span></h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    <span class="lang-en">Core tools open to everyone. Creativity should not be limited by status or wealth.</span>
+                    <span class="lang-zh">核心工具向所有人開放，創造力不應被身份、地位或財富所限制。</span>
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all group">
+                <div class="text-3xl mb-4 grayscale group-hover:grayscale-0 transition-all">♾️</div>
+                <h3 class="font-bold mb-3"><span class="lang-en">Sustainable Legacy</span><span class="lang-zh">永續且可傳承的遺產</span></h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    <span class="lang-en">Digital lives designed as secure, inheritable assets that transcend physical life.</span>
+                    <span class="lang-zh">數字生命被設計為能夠超越物理生命、可安全傳承的資產，建立跨越代際的情感與智慧連接。</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
+        <div class="mb-16 reveal-text">
+            <h2 class="text-4xl font-bold mb-6">
+                <span class="lang-en">Architecture of Soul</span>
+                <span class="lang-zh">數字靈魂的架構</span>
+            </h2>
+            <p class="text-gray-500 max-w-2xl">
+                <span class="lang-en">Core technologies building credible, profound, and living digital souls.</span>
+                <span class="lang-zh">構建可信、深刻且富有生命力的數字靈魂的核心技術。</span>
+            </p>
+        </div>
+
+        <div class="space-y-24">
+            <!-- Personality Engine -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
+                <div class="md:col-span-4 border-t-2 border-black pt-6">
+                    <span class="font-mono text-xs text-gray-400 mb-4 block">01 / Engine</span>
+                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Personality Engine</span><span class="lang-zh">人格引擎</span></h3>
+                    <p class="text-gray-600 mb-6">
+                        <span class="lang-en">Solving the "inconsistent personality" issue through a multi-layered controlled architecture ensuring coherence.</span>
+                        <span class="lang-zh">解決AI角色「人格不一致」的核心痛點，通過多層次的受控架構確保數字生命體的行為連貫性和可信度。</span>
+                    </p>
+                    <div class="text-5xl opacity-10">🧠</div>
+                </div>
+                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Core Personality</span><span class="lang-zh">核心人格</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Based on "Big Five" model for consistency.</span><span class="lang-zh">基於成熟的「大五人格模型」，設定基礎傾向。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Identity Narrative</span><span class="lang-zh">身份敘事</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Defined values via knowledge injection.</span><span class="lang-zh">通過用戶主動的「知識注入」定義價值觀。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Behavior Engine</span><span class="lang-zh">行為引擎</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">"Behavior Tree" technology for complex logic.</span><span class="lang-zh">採用「行為樹」技術設計複雜行為邏輯。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Emotional Core</span><span class="lang-zh">情感核心</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Real-time dynamic emotional state model.</span><span class="lang-zh">實時變化的情感狀態模型。</span></p>
                     </div>
                 </div>
-                
-                <div class="paradigm-card beingos animate-on-scroll">
-                    <h3 class="paradigm-title">BeingOS：新範式</h3>
-                    <p class="card-content">致力於去中心化、自下而上的普世數字身份創造，實現用戶主權。</p>
-                    
-                    <div class="paradigm-points">
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-user-friends"></i></div>
-                            <div class="point-content">
-                                <h4>目標受眾</h4>
-                                <p>每一個個體、創造者、開發者</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-network-wired"></i></div>
-                            <div class="point-content">
-                                <h4>數據與控制模型</h4>
-                                <p>去中心化；100%由用戶控制和擁有</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-lock"></i></div>
-                            <div class="point-content">
-                                <h4>安全目標</h4>
-                                <p>保護用戶隱私免受包括平台在內的所有人侵犯</p>
-                            </div>
-                        </div>
-                        
-                        <div class="paradigm-point">
-                            <div class="point-icon"><i class="fas fa-coins"></i></div>
-                            <div class="point-content">
-                                <h4>經濟模型</h4>
-                                <p>用戶訂閱與開放的創造者經濟模式</p>
-                            </div>
-                        </div>
+            </div>
+
+            <!-- Memory Cortex -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
+                <div class="md:col-span-4 border-t-2 border-black pt-6">
+                    <span class="font-mono text-xs text-gray-400 mb-4 block">02 / Storage</span>
+                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Memory Cortex</span><span class="lang-zh">記憶皮層</span></h3>
+                    <p class="text-gray-600 mb-6">
+                        <span class="lang-en">Solving "AI Amnesia" through structured layered architecture for true long-term companionship.</span>
+                        <span class="lang-zh">解決大型語言模型「AI遺忘症」的根本挑戰，通過結構化的分層架構實現真正的長期陪伴關係。</span>
+                    </p>
+                    <div class="text-5xl opacity-10">💾</div>
+                </div>
+                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Working Memory</span><span class="lang-zh">工作記憶</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Immediate context processing.</span><span class="lang-zh">處理當前對話的即時上下文。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Episodic Memory</span><span class="lang-zh">情景記憶</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Auto-identify events in "5W" format.</span><span class="lang-zh">以結構化的「5W」格式編碼存儲關鍵事件。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Semantic Memory</span><span class="lang-zh">語義記憶</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Long-term knowledge graph.</span><span class="lang-zh">長期知識庫，存入結構化的知識圖譜中。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Consolidation</span><span class="lang-zh">記憶鞏固</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Simulating human forgetting mechanism.</span><span class="lang-zh">模擬人腦機制，允許不重要細節自然遺忘。</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interaction Engine -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 reveal-text">
+                <div class="md:col-span-4 border-t-2 border-black pt-6">
+                    <span class="font-mono text-xs text-gray-400 mb-4 block">03 / Interface</span>
+                    <h3 class="text-2xl font-bold mb-4"><span class="lang-en">Interaction Engine</span><span class="lang-zh">互動引擎</span></h3>
+                    <p class="text-gray-600 mb-6">
+                        <span class="lang-en">Multi-modal perception and context understanding for natural, fluid interaction.</span>
+                        <span class="lang-zh">互動引擎通過多模態感知和上下文理解，為數字生命體提供自然、流暢的交互能力。</span>
+                    </p>
+                    <div class="text-5xl opacity-10">💬</div>
+                </div>
+                <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Multi-modal</span><span class="lang-zh">多模態感知</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Visual, auditory, and tactile input.</span><span class="lang-zh">整合視覺、聽覺和觸覺輸入。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Context Mgmt</span><span class="lang-zh">上下文管理</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Deep understanding of flow.</span><span class="lang-zh">基於深度上下文理解，維持對話連貫。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Voice System</span><span class="lang-zh">語音交互</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Advanced recognition & synthesis.</span><span class="lang-zh">先進的語音識別與合成技術。</span></p>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded border border-gray-100">
+                        <h4 class="font-bold text-sm mb-2"><span class="lang-en">Emotional Exp</span><span class="lang-zh">情感化表達</span></h4>
+                        <p class="text-xs text-gray-500"><span class="lang-en">Tone, expression, and gestures.</span><span class="lang-zh">通過語音語調、面部表情表達情感。</span></p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 核心支柱 -->
-    <section class="section" id="pillars">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">數字主權的四大支柱</h2>
-                <p class="section-subtitle">BeingOS 的願景建立在四大不可動搖的原則之上</p>
-            </div>
-            
-            <div class="pillars-grid">
-                <div class="pillar-card animate-on-scroll">
-                    <div class="pillar-icon"><i class="fas fa-user-shield"></i></div>
-                    <h3 class="pillar-title">徹底的用戶控制</h3>
-                    <p class="pillar-desc">用戶是其數字存在的唯一主宰者，擁有創造、修改、乃至永久刪除其數字生命體的絕對權利。</p>
-                </div>
-                
-                <div class="pillar-card animate-on-scroll">
-                    <div class="pillar-icon"><i class="fas fa-lock"></i></div>
-                    <h3 class="pillar-title">源於架構的隱私</h3>
-                    <p class="pillar-desc">隱私不是政策條款，而是通過密碼學和系統設計實現的數學保證，平台無法訪問用戶原始私密數據。</p>
-                </div>
-                
-                <div class="pillar-card animate-on-scroll">
-                    <div class="pillar-icon"><i class="fas fa-paint-brush"></i></div>
-                    <h3 class="pillar-title">開放與民主化的創造</h3>
-                    <p class="pillar-desc">核心工具向所有人開放，創造力不應被身份、地位或財富所限制。</p>
-                </div>
-                
-                <div class="pillar-card animate-on-scroll">
-                    <div class="pillar-icon"><i class="fas fa-infinity"></i></div>
-                    <h3 class="pillar-title">永續且可傳承的遺產</h3>
-                    <p class="pillar-desc">數字生命被設計為能夠超越物理生命、可安全傳承的資產，建立跨越代際的情感與智慧連接。</p>
-                </div>
-            </div>
+    <!-- Products -->
+    <section id="products" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-b border-gray-200">
+        <div class="flex justify-between items-end mb-12 reveal-text">
+            <h2 class="text-3xl font-bold tracking-tight"><span class="lang-en">Product Suite</span><span class="lang-zh">產品套件</span></h2>
+            <span class="text-xs font-mono text-gray-400">Complete Solution</span>
         </div>
-    </section>
 
-    <!-- 技術架構 -->
-    <section class="section architecture-section" id="architecture">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">數字靈魂的架構</h2>
-                <p class="section-subtitle">構建可信、深刻且富有生命力的數字靈魂的核心技術</p>
-            </div>
-            
-            <div class="architecture-tabs">
-                <button class="tab active" data-tab="personality">人格引擎</button>
-                <button class="tab" data-tab="memory">記憶皮層</button>
-                <button class="tab" data-tab="interaction">互動引擎</button>
-            </div>
-            
-            <div class="tab-content active" id="personality-content">
-                <div class="architecture-content animate-on-scroll">
-                    <div class="architecture-image">
-                        <div class="architecture-image-placeholder">
-                            <i class="fas fa-brain"></i>
-                            <p>人格引擎架構示意圖</p>
-                        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- BeingMe -->
+            <div class="bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text group">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="font-mono text-xs text-gray-400">01</span>
+                    <span class="px-2 py-1 bg-black text-white rounded text-[10px] font-bold font-mono">Personal</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
+                    BeingMe
+                    <span class="block text-sm font-normal text-gray-500 mt-1"><span class="lang-en">Your Personal AI Companion</span><span class="lang-zh">你的個人AI伴侶</span></span>
+                </h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-8">
+                    <span class="lang-en">Not an external assistant, but an organic extension of self. A partner in thought, guardian of memory, and tool for self-actualization.</span>
+                    <span class="lang-zh">BeingMe並非外部的智能助手，而是用戶自我的有機延伸。它是一個思想的夥伴、記憶的守護者，以及實現自我實現的強大工具。</span>
+                </p>
+                <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">🧠 <span class="lang-en">Cognition</span><span class="lang-zh">認知增強</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Offload cognitive tasks.</span><span class="lang-zh">外包繁雜認知任務。</span></p>
                     </div>
-                    
-                    <div class="architecture-details">
-                        <h3 class="architecture-title">塑造一致且可信的生命體</h3>
-                        <p class="card-content">解決AI角色"人格不一致"的核心痛點，通過多層次的受控架構確保數字生命體的行為連貫性和可信度。</p>
-                        
-                        <div class="architecture-features">
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-layer-group"></i></div>
-                                <div class="feature-content">
-                                    <h4>核心人格（心理學基礎）</h4>
-                                    <p>基於成熟的"大五人格模型"，設定基礎傾向，確保長期行為模式的一致性和可預測性。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-book"></i></div>
-                                <div class="feature-content">
-                                    <h4>身份敘事（後天習得的身份）</h4>
-                                    <p>通過用戶主動的"知識注入"和持續互動構建，定義Being的價值觀、關鍵人際關係和重要記憶。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
-                                <div class="feature-content">
-                                    <h4>行為引擎（目標驅動的行動）</h4>
-                                    <p>採用"行為樹"技術，為不同人格的Being設計複雜的、有狀態的行為邏輯，使行為目標驅動。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-heart"></i></div>
-                                <div class="feature-content">
-                                    <h4>情感核心（動態的情緒狀態）</h4>
-                                    <p>實時變化的情感狀態模型，綜合分析對話內容、用戶情緒和目標實現情況，賦予自然的情感表達能力。</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">📔 <span class="lang-en">Life Log</span><span class="lang-zh">生命日誌</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Narrative identity avatar.</span><span class="lang-zh">敘事身份的活化身。</span></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">🚪 <span class="lang-en">Gateway</span><span class="lang-zh">個性化網關</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Trusted agent interface.</span><span class="lang-zh">可信賴的代理人。</span></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">❤️ <span class="lang-en">Wellness</span><span class="lang-zh">情感健康</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Non-judgmental space.</span><span class="lang-zh">絕對私密的安全空間。</span></p>
                     </div>
                 </div>
             </div>
-            
-            <div class="tab-content" id="memory-content">
-                <div class="architecture-content animate-on-scroll">
-                    <div class="architecture-details">
-                        <h3 class="architecture-title">構建終身進化的夥伴</h3>
-                        <p class="card-content">解決大型語言模型"AI遺忘症"的根本挑戰，通過結構化的分層架構實現真正的長期陪伴關係。</p>
-                        
-                        <div class="architecture-features">
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                                <div class="feature-content">
-                                    <h4>工作記憶（短期記憶）</h4>
-                                    <p>處理當前對話的即時上下文，確保對話的流暢性和相關性，這部分信息是短暫的。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-calendar-day"></i></div>
-                                <div class="feature-content">
-                                    <h4>情景記憶</h4>
-                                    <p>自動識別並存儲關鍵的對話事件和生活片段，以結構化的"5W"格式編碼存儲，提高檢索效率。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-book-open"></i></div>
-                                <div class="feature-content">
-                                    <h4>語義記憶（事實與知識）</h4>
-                                    <p>長期知識庫，自動提取關於用戶的核心事實和通用知識，存入結構化的知識圖譜中。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-history"></i></div>
-                                <div class="feature-content">
-                                    <h4>記憶鞏固與遺忘機制</h4>
-                                    <p>模擬人腦的記憶機制，隨時間將情景記憶轉化為語義記憶，允許不重要細節自然遺忘。</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="architecture-image">
-                        <div class="architecture-image-placeholder">
-                            <i class="fas fa-memory"></i>
-                            <p>記憶皮層架構示意圖</p>
-                        </div>
-                    </div>
+
+            <!-- BeingHer -->
+            <div class="bg-white border border-gray-200 p-8 rounded-xl hover:shadow-2xl hover:border-black/10 transition-all duration-500 reveal-text delay-100 group">
+                <div class="flex justify-between items-start mb-6">
+                    <span class="font-mono text-xs text-gray-400">02</span>
+                    <span class="px-2 py-1 bg-black text-white rounded text-[10px] font-bold font-mono">Creator</span>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="interaction-content">
-                <div class="architecture-content animate-on-scroll">
-                    <div class="architecture-image">
-                        <div class="architecture-image-placeholder">
-                            <i class="fas fa-comments"></i>
-                            <p>互動引擎架構示意圖</p>
-                        </div>
+                <h3 class="text-2xl font-bold mb-4 group-hover:text-gray-600 transition-colors">
+                    BeingHer
+                    <span class="block text-sm font-normal text-gray-500 mt-1"><span class="lang-en">AI-Native Media Foundry</span><span class="lang-zh">AI原生媒體鑄造廠</span></span>
+                </h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-8">
+                    <span class="lang-en">Empowering creators to become "World Builders", creating entire populations of autonomous intelligent beings.</span>
+                    <span class="lang-zh">賦予創造者前所未有的力量——不再是僅僅創造單個角色，而是能夠創造擁有自主智能的整個「AI種群」，蛻變為「世界構建者」。</span>
+                </p>
+                <div class="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">🎨 <span class="lang-en">Studio</span><span class="lang-zh">角色工作室</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Design AI "Genes".</span><span class="lang-zh">設計AI生命體「基因」。</span></p>
                     </div>
-                    
-                    <div class="architecture-details">
-                        <h3 class="architecture-title">實現自然流暢的交互體驗</h3>
-                        <p class="card-content">互動引擎通過多模態感知和上下文理解，為數字生命體提供自然、流暢的交互能力。</p>
-                        
-                        <div class="architecture-features">
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-eye"></i></div>
-                                <div class="feature-content">
-                                    <h4>多模態感知系統</h4>
-                                    <p>整合視覺、聽覺和觸覺輸入，讓數字生命體能夠感知和理解周圍環境。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-comment-dots"></i></div>
-                                <div class="feature-content">
-                                    <h4>上下文對話管理</h4>
-                                    <p>基於深度上下文理解，維持連貫、自然的對話流程，記憶過往對話內容。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-microphone-alt"></i></div>
-                                <div class="feature-content">
-                                    <h4>語音交互系統</h4>
-                                    <p>先進的語音識別與合成技術，實現自然語音對話，支持多種語言和方言。</p>
-                                </div>
-                            </div>
-                            
-                            <div class="feature-item">
-                                <div class="feature-icon"><i class="fas fa-hands"></i></div>
-                                <div class="feature-content">
-                                    <h4>情感化表達</h4>
-                                    <p>通過語音語調、面部表情和肢體動作，真實表達數字生命體的情感狀態。</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">🌍 <span class="lang-en">Simulation</span><span class="lang-zh">世界模擬器</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Observe emergent behavior.</span><span class="lang-zh">觀察與引導湧現行為。</span></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">📦 <span class="lang-en">Deploy</span><span class="lang-zh">多格式部署</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Game engines & films.</span><span class="lang-zh">導出至遊戲或互動電影。</span></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs mb-1">🧬 <span class="lang-en">Diversity</span><span class="lang-zh">多樣化創造</span></h4>
+                        <p class="text-[10px] text-gray-400"><span class="lang-en">Any form of life.</span><span class="lang-zh">創造任何形式的生命體。</span></p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 產品套件 -->
-    <section class="section" id="products">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">產品套件</h2>
-                <p class="section-subtitle">從AI伴侶到AI宇宙的完整解決方案</p>
+    <!-- Trust Architecture -->
+    <section id="trust" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto border-b border-gray-200">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-text">
+            <div>
+                <h2 class="text-4xl font-bold mb-4">
+                    <span class="lang-en">Trust Architecture</span><span class="lang-zh">信任架構</span>
+                </h2>
+                <p class="text-gray-500"><span class="lang-en">New standards for security, privacy, and legacy.</span><span class="lang-zh">安全、隱私與遺產的新標準。</span></p>
             </div>
-            
-            <div class="products-grid">
-                <div class="product-card beingme animate-on-scroll">
-                    <h3 class="product-title"><span>BeingMe</span> - 你的個人AI伴侶</h3>
-                    <p class="product-desc">BeingMe並非外部的智能助手，而是用戶自我的有機延伸。它是一個思想的夥伴、記憶的守護者，以及實現自我實現的強大工具。</p>
-                    
-                    <div class="product-features">
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-brain"></i></div>
-                            <div class="product-feature-content">
-                                <h4>認知增強</h4>
-                                <p>將繁雜的認知任務"外包"給自己的BeingMe，解放大腦的認知資源，專注於更高層次的思考和創造。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-book"></i></div>
-                            <div class="product-feature-content">
-                                <h4>交互式生命日誌</h4>
-                                <p>用戶"敘事身份"的活化身，基於數年的個人數據綜合分析，給出深刻的、敘事性的回答。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-door-open"></i></div>
-                            <div class="product-feature-content">
-                                <h4>個性化網關</h4>
-                                <p>作為用戶唯一的、可信賴的代理人，代表用戶與外部世界交互，確保交互的安全性和個性化。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-heart"></i></div>
-                            <div class="product-feature-content">
-                                <h4>情感健康</h4>
-                                <p>提供絕對私密、永不評判、永遠在線的情感"安全空間"，成為耐心的傾聽者。</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-gray-200 mb-12 reveal-text">
+            <div class="border-r border-b lg:border-b-0 border-gray-200 p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
+                <span class="text-xs font-mono opacity-50 mb-6 block">01 / Privacy</span>
+                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Federated Privacy</span><span class="lang-zh">源於設計的隱私</span></h3>
+                <p class="text-xs opacity-50 leading-relaxed mt-4">
+                    <span class="lang-en">Using Federated Learning and Differential Privacy. Data never leaves your device.</span>
+                    <span class="lang-zh">採用聯邦學習與差分隱私技術。個性化訓練在本地進行，原始數據永不離開設備。</span>
+                </p>
+            </div>
+
+            <div class="border-r border-b lg:border-b-0 border-gray-200 p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
+                <span class="text-xs font-mono opacity-50 mb-6 block">02 / Identity</span>
+                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Decentralized IDs</span><span class="lang-zh">去中心化身份(DIDs)</span></h3>
+                <p class="text-xs opacity-50 leading-relaxed mt-4">
+                    <span class="lang-en">Blockchain-based DIDs for every user and Being. Ownership proven by private keys.</span>
+                    <span class="lang-zh">基於區塊鏈的去中心化標識符(DID)。用戶通過私鑰證明所有權，無需中心化許可。</span>
+                </p>
+            </div>
+
+            <div class="p-10 hover:bg-black hover:text-white transition-colors duration-300 group">
+                <span class="text-xs font-mono opacity-50 mb-6 block">03 / Legacy</span>
+                <h3 class="text-2xl font-bold mb-2"><span class="lang-en">Legacy Protocol</span><span class="lang-zh">數字遺產協議</span></h3>
+                <p class="text-xs opacity-50 leading-relaxed mt-4">
+                    <span class="lang-en">Cryptographic transfer of control to executors. Pre-set "afterlife" behavioral rules.</span>
+                    <span class="lang-zh">通過密碼學協議安全轉移DID控制權。設定詳盡的「身後行為準則」。</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ecosystem -->
+    <section id="ecosystem" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto bg-gray-50 border-b border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
+            <div class="md:col-span-4">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6 reveal-text">
+                    <span class="lang-en">The Ecosystem</span>
+                    <span class="lang-zh">生態系統</span>
+                </h2>
+                <span class="inline-block px-3 py-1 rounded-full border border-gray-300 text-xs font-mono text-gray-500 uppercase reveal-text delay-100">// Decentralized Creator Economy</span>
+            </div>
+            <div class="md:col-span-8">
+                <p class="text-xl font-light text-gray-600 mb-12 reveal-text">
+                    <span class="lang-en">Cultivating a decentralized creator economy where every participant contributes and benefits.</span>
+                    <span class="lang-zh">培育去中心化的創造者經濟，讓每個參與者都能貢獻並從中獲益。</span>
+                </p>
                 
-                <div class="product-card beingher animate-on-scroll">
-                    <h3 class="product-title"><span>BeingHer</span> - 創造者的AI原生媒體鑄造廠</h3>
-                    <p class="product-desc">賦予創造者前所未有的力量——不再是僅僅創造單個角色，而是能夠創造擁有自主智能的整個"AI種群"，使創造者從"劇作家"蛻變為"世界構建者"。</p>
-                    
-                    <div class="product-features">
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-palette"></i></div>
-                            <div class="product-feature-content">
-                                <h4>角色工作室</h4>
-                                <p>可視化界面讓創造者設計AI生命體的"基因"，包括核心人格特質、內在動機、知識體系和行為規則。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-globe-americas"></i></div>
-                            <div class="product-feature-content">
-                                <h4>世界模擬器</h4>
-                                <p>強大的沙盒環境，部署設計的BeingHer種群，觀察它們之間的互動，微調和引導"湧現行為"。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-shapes"></i></div>
-                            <div class="product-feature-content">
-                                <h4>多格式部署</h4>
-                                <p>通過SDK導出設計好的AI生命體，部署到多種目標環境，包括主流遊戲引擎和互動電影平台。</p>
-                            </div>
-                        </div>
-                        
-                        <div class="product-feature">
-                            <div class="product-feature-icon"><i class="fas fa-dna"></i></div>
-                            <div class="product-feature-content">
-                                <h4>多樣化生命創造</h4>
-                                <p>創造任何形式的生命體，從現實動物、神話怪獸到科幻外星人，賦予獨一無二的人格和行為模式。</p>
-                            </div>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-text">
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">👤 <span class="lang-en">Users</span><span class="lang-zh">用戶</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">The cornerstone. Contribute data/attention, gain empowerment tools.</span>
+                            <span class="lang-zh">生態基石，貢獻數據與注意力，獲得個人賦能工具。</span>
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">🎨 <span class="lang-en">Creators</span><span class="lang-zh">創造者</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">The soul. Design AI lifeforms and worlds, injecting diverse content.</span>
+                            <span class="lang-zh">生態靈魂，設計AI生命體和互動世界，注入多元內容。</span>
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">💻 <span class="lang-en">Developers</span><span class="lang-zh">開發者</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Build "Skills" and "Personality Packs" to extend functionality.</span>
+                            <span class="lang-zh">功能擴展者，為Being構建「技能」和「人格包」。</span>
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">🏪 <span class="lang-en">Marketplace</span><span class="lang-zh">市場</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Trade core components: skills, skins, personalities, and finished Beings.</span>
+                            <span class="lang-zh">交易AI生命體核心組件，包括技能、人格包、外觀與成品。</span>
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">☁️ <span class="lang-en">Infrastructure</span><span class="lang-zh">基礎設施</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Distributed compute and storage supporting the ecosystem.</span>
+                            <span class="lang-zh">提供分布式計算與存儲，支撐整個生態運行。</span>
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all">
+                        <h4 class="font-bold mb-2">🛡️ <span class="lang-en">Security</span><span class="lang-zh">安全服務</span></h4>
+                        <p class="text-sm text-gray-600">
+                            <span class="lang-en">Ensure privacy, data security, and system integrity.</span>
+                            <span class="lang-zh">確保用戶隱私和數據安全，維護系統完整性。</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 信任架構 -->
-    <section class="section" id="trust">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">信任架構</h2>
-                <p class="section-subtitle">安全、隱私與遺產的新標準</p>
+    <!-- Partners -->
+    <section id="partners" class="py-24 px-6 md:px-8 max-w-[1920px] mx-auto">
+        <h2 class="text-3xl font-bold mb-16 text-center reveal-text"><span class="lang-en">Our Partners</span><span class="lang-zh">合作夥伴</span></h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 reveal-text">
+            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
+                <div class="text-4xl mb-4">🤖</div>
+                <h3 class="font-bold mb-2">AI Future Group</h3>
+                <p class="text-xs text-gray-500"><span class="lang-en">OS & Infrastructure</span><span class="lang-zh">底層操作系統支持</span></p>
             </div>
-            
-            <div class="trust-grid">
-                <div class="trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="fas fa-user-secret"></i></div>
-                    <h3 class="trust-title">源於設計的隱私</h3>
-                    <p class="trust-desc">採用聯邦學習(Federated Learning)技術，個性化訓練完全在用戶設備上進行，原始數據永不離開設備。增加差分隱私(Differential Privacy)加固，為隱私提供可量化、可證明的嚴格保護。</p>
-                </div>
-                
-                <div class="trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="fas fa-key"></i></div>
-                    <h3 class="trust-title">去中心化身份(DIDs)</h3>
-                    <p class="trust-desc">每位用戶及其創造的Being分配基於區塊鏈的去中心化標識符(DID)，所有權和控制權完全屬於用戶。用戶通過私鑰證明所有權，無需中心化機構許可。</p>
-                </div>
-                
-                <div class="trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="fas fa-chess-king"></i></div>
-                    <h3 class="trust-title">數字遺產協議</h3>
-                    <p class="trust-desc">通過密碼學協議將逝者Being的DID控制權安全轉移給指定執行人。用戶可以設定詳盡的"身後行為準則"，解決關於身後數字形象的複雜倫理問題。</p>
-                </div>
+            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
+                <div class="text-4xl mb-4">👓</div>
+                <h3 class="font-bold mb-2">404Glass</h3>
+                <p class="text-xs text-gray-500"><span class="lang-en">AR Hardware</span><span class="lang-zh">AR設備合作夥伴</span></p>
+            </div>
+            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
+                <div class="text-4xl mb-4">🧠</div>
+                <h3 class="font-bold mb-2">NeuroTech Labs</h3>
+                <p class="text-xs text-gray-500"><span class="lang-en">Cognitive Science</span><span class="lang-zh">認知科學研究</span></p>
+            </div>
+            <div class="text-center p-6 border border-transparent hover:border-gray-200 rounded-xl transition-all">
+                <div class="text-4xl mb-4">⛓️</div>
+                <h3 class="font-bold mb-2">BlockSecure</h3>
+                <p class="text-xs text-gray-500"><span class="lang-en">Blockchain Security</span><span class="lang-zh">區塊鏈安全</span></p>
             </div>
         </div>
     </section>
 
-    <!-- 生態系統 - 重新設計 -->
-    <section class="section ecosystem-section" id="ecosystem">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">生態系統</h2>
-                <p class="section-subtitle">培育去中心化的創造者經濟</p>
-            </div>
-            
-            <div class="ecosystem-diagram">
-                <div class="ecosystem-center">
-                    <h3>BeingOS 生態系統</h3>
-                    <p>數字存在的操作系統</p>
-                </div>
-                
-                <div class="ecosystem-nodes">
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-users"></i></div>
-                        <h4 class="ecosystem-node-title">用戶</h4>
-                        <p class="ecosystem-node-desc">生態基石，貢獻數據與注意力，獲得個人賦能工具</p>
-                    </div>
-                    
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-paint-brush"></i></div>
-                        <h4 class="ecosystem-node-title">創造者</h4>
-                        <p class="ecosystem-node-desc">生態靈魂，設計AI生命體和互動世界，注入多元內容</p>
-                    </div>
-                    
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-code"></i></div>
-                        <h4 class="ecosystem-node-title">開發者</h4>
-                        <p class="ecosystem-node-desc">功能擴展者，為Being構建"技能"和"人格包"，帶來功能創新</p>
-                    </div>
-                    
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-store"></i></div>
-                        <h4 class="ecosystem-node-title">市場</h4>
-                        <p class="ecosystem-node-desc">交易AI生命體核心組件，包括技能、人格包、外觀與成品生命體</p>
-                    </div>
-                    
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-server"></i></div>
-                        <h4 class="ecosystem-node-title">基礎設施</h4>
-                        <p class="ecosystem-node-desc">提供分布式計算與存儲，支撐整個生態運行</p>
-                    </div>
-                    
-                    <div class="ecosystem-node animate-on-scroll">
-                        <div class="ecosystem-node-icon"><i class="fas fa-shield-alt"></i></div>
-                        <h4 class="ecosystem-node-title">安全服務</h4>
-                        <p class="ecosystem-node-desc">確保用戶隱私和數據安全，維護系統完整性</p>
-                    </div>
+    <!-- Footer / CTA -->
+    <footer id="contact" class="bg-black text-white pt-24 pb-8 px-6 md:px-8 mt-24">
+        <div class="max-w-[1920px] mx-auto">
+            <div class="flex flex-col items-center justify-center mb-24 text-center reveal-text">
+                <h2 class="text-[8vw] md:text-[6vw] font-bold tracking-tighter leading-none mb-8">
+                    Start Your Existence.
+                </h2>
+                <div class="flex gap-4">
+                    <a href="#demo" class="inline-block px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform duration-300">
+                        <span class="lang-en">Apply for Demo</span><span class="lang-zh">申請體驗資格</span>
+                    </a>
+                    <a href="#contact" class="inline-block px-12 py-5 border border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-black transition-all duration-300">
+                        <span class="lang-en">Partner With Us</span><span class="lang-zh">成為合作夥伴</span>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- 合作夥伴 -->
-    <section class="section" id="partners">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">合作夥伴</h2>
-                <p class="section-subtitle">與行業領導者共同構建數字存在生態</p>
-            </div>
-            
-            <div class="partners-grid">
-                <div class="partner-card animate-on-scroll">
-                    <div class="partner-logo"><i class="fas fa-robot"></i></div>
-                    <h3 class="partner-name">AI Future Group</h3>
-                    <p class="partner-desc">提供底層操作系統和基礎設施支持</p>
-                </div>
-                
-                <div class="partner-card animate-on-scroll">
-                    <div class="partner-logo"><i class="fas fa-vr-cardboard"></i></div>
-                    <h3 class="partner-name">404Glass</h3>
-                    <p class="partner-desc">AR設備合作夥伴，提供沉浸式體驗硬件</p>
-                </div>
-                
-                <div class="partner-card animate-on-scroll">
-                    <div class="partner-logo"><i class="fas fa-brain"></i></div>
-                    <h3 class="partner-name">NeuroTech Labs</h3>
-                    <p class="partner-desc">認知科學研究和人格模型開發</p>
-                </div>
-                
-                <div class="partner-card animate-on-scroll">
-                    <div class="partner-logo"><i class="fas fa-shield-alt"></i></div>
-                    <h3 class="partner-name">BlockSecure</h3>
-                    <p class="partner-desc">區塊鏈安全與隱私保護解決方案</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section" id="contact">
-        <div class="container">
-            <h2 class="cta-title">開啟數字存在的新紀元</h2>
-            <p class="cta-desc">加入我們，共同構建一個不僅更智能，而且更個性、更富創造力、更具主權的未來。</p>
-            
-            <div class="cta-btns">
-                <a href="#contact-form" class="btn btn-primary">成為合作夥伴</a>
-                <a href="#demo" class="btn btn-outline">申請體驗資格</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 頁腳 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo">
-                        <div class="logo-main">BeingOS</div>
-                        <div class="logo-sub">Digital Existence Operating System</div>
-                    </div>
-                    <p class="footer-desc">BeingOS是為數字存在打造的基礎操作系統，賦能每個個體創造、管理並部署自主的AI生命體，開啟從"IP保護"到"用戶主權"的範式革命。</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-medium"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-t border-white/20 pt-12">
+                <div class="col-span-1 md:col-span-2">
+                    <a href="#" class="text-2xl font-bold block mb-4">BeingOS.</a>
+                    <p class="text-gray-400 text-sm max-w-xs leading-relaxed">
+                        <span class="lang-en">The foundational operating system for digital existence. From "IP protection" to "User Sovereignty".</span>
+                        <span class="lang-zh">數字存在的基礎操作系統。開啟從「IP保護」到「用戶主權」的範式革命。</span>
+                    </p>
                 </div>
                 
                 <div>
-                    <h3 class="footer-title">產品</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">BeingMe</a></li>
-                        <li><a href="#">BeingHer</a></li>
-                        <li><a href="#">AI世界引擎</a></li>
-                        <li><a href="#">開發者工具</a></li>
-                        <li><a href="#">市場</a></li>
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Products</h4>
+                    <ul class="space-y-3 text-sm font-medium text-gray-300">
+                        <li><a href="#" class="hover:text-white">BeingMe</a></li>
+                        <li><a href="#" class="hover:text-white">BeingHer</a></li>
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">World Engine</span><span class="lang-zh">AI世界引擎</span></a></li>
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">Marketplace</span><span class="lang-zh">市場</span></a></li>
                     </ul>
                 </div>
-                
+
                 <div>
-                    <h3 class="footer-title">資源</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">開發者文檔</a></li>
-                        <li><a href="#">API參考</a></li>
-                        <li><a href="#">教程</a></li>
-                        <li><a href="#">案例研究</a></li>
-                        <li><a href="#">白皮書</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="footer-title">公司</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">關於我們</a></li>
-                        <li><a href="#">團隊</a></li>
-                        <li><a href="#">博客</a></li>
-                        <li><a href="#">聯繫我們</a></li>
-                        <li><a href="#">加入我們</a></li>
+                    <h4 class="text-xs font-bold uppercase tracking-wider mb-4 text-gray-500">Resources</h4>
+                    <ul class="space-y-3 text-sm font-medium text-gray-300">
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">Documentation</span><span class="lang-zh">開發者文檔</span></a></li>
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">Whitepaper</span><span class="lang-zh">白皮書</span></a></li>
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">About Us</span><span class="lang-zh">關於我們</span></a></li>
+                        <li><a href="#" class="hover:text-white"><span class="lang-en">Contact</span><span class="lang-zh">聯繫我們</span></a></li>
                     </ul>
                 </div>
             </div>
             
-            <div class="footer-bottom">
-                <p>&copy; 2025 BeingOS. 保留所有權利。 | 隱私政策 | 服務條款</p>
+            <div class="mt-20 flex justify-between items-end text-[10px] uppercase text-gray-500 font-mono">
+                <p>&copy; 2025 BeingOS. All Rights Reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // 標籤切換功能
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // 移除所有活動標籤
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                // 隱藏所有內容
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                // 激活當前標籤
-                tab.classList.add('active');
-                
-                // 顯示對應內容
-                const tabName = tab.getAttribute('data-tab');
-                document.getElementById(`${tabName}-content`).classList.add('active');
-            });
-        });
-        
-        // 平滑滾動
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // 頁面滾動效果
-        window.addEventListener('scroll', () => {
-            const scrollPosition = window.scrollY;
-            const navbar = document.querySelector('.navbar');
+        // Language Toggle
+        function toggleLanguage() {
+            const body = document.body;
+            const currentLang = body.getAttribute('data-lang');
+            const newLang = currentLang === 'en' ? 'zh' : 'en';
+            body.setAttribute('data-lang', newLang);
+            // Optional: Save preference
+            // localStorage.setItem('preferredLanguage', newLang);
+        }
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('open');
             
-            if(scrollPosition > 100) {
-                navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            // Toggle Hamburger Icon Animation
+            const spans = menuBtn.querySelectorAll('span');
+            if(mobileMenu.classList.contains('open')) {
+                // Open state: X shape
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
             } else {
-                navbar.style.boxShadow = 'none';
+                // Closed state: Hamburger shape
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
             }
-            
-            // 滾動動畫效果
-            const animateElements = document.querySelectorAll('.animate-on-scroll');
-            animateElements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                const screenPosition = window.innerHeight / 1.3;
-                
-                if(elementPosition < screenPosition) {
-                    element.style.animation = 'fadeInUp 0.8s ease-out forwards';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // Intersection Observer for Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
                 }
             });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
-        
-        // 初始化頁面滾動位置，觸發一次滾動事件
-        window.dispatchEvent(new Event('scroll'));
+
+        // Initialize on DOM Load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Observe all reveal elements
+            document.querySelectorAll('.reveal-text').forEach(el => {
+                observer.observe(el);
+            });
+        });
     </script>
 </body>
 </html>
